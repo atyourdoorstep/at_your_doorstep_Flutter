@@ -12,15 +12,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'api.dart';
 
 
-void main() {
+void main()  {
   //runApp(HomePage());
+
+  //return;
   runApp(MyApp());
 }
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: 'At Your Doorstep',
       debugShowCheckedModeBanner: false,
@@ -41,14 +45,27 @@ class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
- getTkn(Future x)
- {
-  return  x.toString();
+saveStringTolocal(String key,String value)async
+{
+  SharedPreferences localStorage = await SharedPreferences.getInstance();
+  localStorage.setString(key, value);
+}
+saveToken()
+async {
+  var csrf = await CallApi().getCSRF();
+  print ('in Save:'+csrf['CSRF']);
+  saveStringTolocal('CSRF',csrf['CSRF']);
+  checkIfToken();
+}
+checkIfToken()
+async {
+  SharedPreferences localStorage = await SharedPreferences.getInstance();
+  String? x=localStorage.getString('CSRF');
+  print('Token after save:'+x!);
 }
 class _MyHomePageState extends State<MyHomePage> {
 
   bool showSpinner = false;
-  late Future csrf;
   var callApi= CallApi() ;
   bool _isLoading = false;
   TextEditingController mailController = TextEditingController();
@@ -68,6 +85,12 @@ class _MyHomePageState extends State<MyHomePage> {
 //     var cs=CallApi().getCSRF();
 //     print(await cs);
 //   }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    saveToken();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,8 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                                 ),
-                                onPressed: () {
-                                  //print(await csrf);
+                                onPressed: () async {
                                   setState(() {
                                     showSpinner = true;
                                   });
