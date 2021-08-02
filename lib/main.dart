@@ -50,19 +50,30 @@ saveStringTolocal(String key,String value)async
   SharedPreferences localStorage = await SharedPreferences.getInstance();
   localStorage.setString(key, value);
 }
-saveToken()
-async {
-  var csrf = await CallApi().getCSRF();
-  print ('in Save:'+csrf['CSRF']);
-  saveStringTolocal('CSRF',csrf['CSRF']);
-  checkIfToken();
-}
-checkIfToken()
-async {
-  SharedPreferences localStorage = await SharedPreferences.getInstance();
-  String? x=localStorage.getString('CSRF');
-  print('Token after save:'+x!);
-}
+// new
+// clearCSRFToken()
+// async {
+//   SharedPreferences preferences = await SharedPreferences.getInstance();
+//   String? x =preferences.getString('CSRF');
+//   if(x!.isNotEmpty) {
+//     await preferences.remove('CSRF');
+//   }
+// }
+// saveToken()
+// async {
+//   //await clearCSRFToken();
+//   var csrf = await CallApi().getCSRF();
+//   print ('in Save:'+csrf['CSRF']);
+//   saveStringTolocal('CSRF',csrf['CSRF']);
+//   checkIfToken();
+// }
+// checkIfToken()
+// async {
+//   SharedPreferences localStorage = await SharedPreferences.getInstance();
+//   String? x=localStorage.getString('CSRF');
+//   print('Token after save:'+x!);
+// }
+// new end
 class _MyHomePageState extends State<MyHomePage> {
 
   bool showSpinner = false;
@@ -72,24 +83,17 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController passwordController = TextEditingController();
   String emailF = "mussabayubawan2@gmail.com";
   String passwordF = "mussabzgr8123";
-// @override
-//   void initState() {
-//     super.initState();
-//     csrf=CallApi().getCSRF() ;
-//     String str=getTkn(csrf.toString());
-//     print( csrf);
-//   }
-
-//   Future<void> getCSRF()
-//   async {
-//     var cs=CallApi().getCSRF();
-//     print(await cs);
-//   }
+  @override
+  void deactivate() {
+    // TODO: implement deactivate
+    super.deactivate();
+    //clearCSRFToken();
+  }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    saveToken();
+    //saveToken();
   }
   @override
   Widget build(BuildContext context) {
@@ -136,7 +140,14 @@ class _MyHomePageState extends State<MyHomePage> {
                                   setState(() {
                                     showSpinner = true;
                                   });
-                                  if(mailController.text != "" && passwordController.text != "") {
+                                  var data = {
+                                    'email' : emailF,//mailController.text,
+                                    'password' : passwordF,//passwordController.text
+                                  };
+                                  var resp=await CallApi().postData(data,  '/mobileLogin');
+                                  print(await resp);
+                                  //login();
+                                  /*if(mailController.text != "" && passwordController.text != "") {
                                     if (emailF == mailController.text &&
                                         passwordF == passwordController.text) {
                                       CircularProgressIndicator();
@@ -165,7 +176,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                             );
                                           });
                                     }
-                                  }
+                                  }*/
                                 },
                                 color: Colors.red,
                                 child: Text("Login", style:
@@ -218,7 +229,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 
- /* void _login() async{
+  void login() async{
 
     setState(() {
       _isLoading = true;
@@ -229,7 +240,7 @@ class _MyHomePageState extends State<MyHomePage> {
       'password' : passwordController.text
     };
 
-    var res = await CallApi().postData(data, 'login');
+    var res = await CallApi().postData(data, 'mobileLogin');
     var body = json.decode(res.body);
     if(body['success']){
       SharedPreferences localStorage = await SharedPreferences.getInstance();
@@ -251,6 +262,6 @@ class _MyHomePageState extends State<MyHomePage> {
 
 
 
-  }*/
+  }
 }
 

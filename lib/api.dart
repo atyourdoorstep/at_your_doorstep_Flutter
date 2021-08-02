@@ -4,16 +4,20 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 class CallApi{
-  final String _url = 'http://10.0.2.2:8000/';
+  final String _url = 'http://10.0.2.2:8000/api';
 
   postData(data, apiUrl) async {
     Uri fullUrl = Uri.parse(_url + apiUrl + await _getToken());
-
-    return await http.post(
+    var head=_setHeaders();
+    print('headers: '+head.toString());
+    //head['X-CSRF-TOKEN']=await _getCurrentCSRF();
+    //print('headers: '+head.toString());
+    var resp=await http.post(
         fullUrl,
         body: jsonEncode(data),
         headers: _setHeaders()
     );
+    return resp.body;
 
   }
   getData(apiUrl) async {
@@ -24,6 +28,7 @@ class CallApi{
     );
     if (resp.statusCode == 200) {
       String data = resp.body;
+      //print('post resp: '+data.toString());
       return jsonDecode(data);
     } else {
       print(resp.statusCode);
@@ -45,12 +50,22 @@ class CallApi{
     var token = localStorage.getString('token');
     return '?token=$token';
   }
-   getCSRF()
-   async {
-     var CSRF=await CallApi().getData('getSessionToken');
-     print('In func:'+CSRF.toString());
-     /*SharedPreferences localStorage = await SharedPreferences.getInstance();
-     localStorage.setString('CSRF', CSRF);*/
-     return CSRF;
-  }
+  // _getCurrentCSRF() async{
+  //   SharedPreferences localStorage = await SharedPreferences.getInstance();
+  //   var CSRF = localStorage.getString('CSRF');
+  //   return CSRF;
+  // }
+  //  getCSRF()
+  //  async {
+  //    var CSRF=await CallApi().getData('getSessionToken');
+  //    print('In func:'+CSRF.toString());
+  //    return CSRF;
+  // }
+  // getSavedCSRF()
+  // async {
+  //   SharedPreferences localStorage = await SharedPreferences.getInstance();
+  //   String? x=localStorage.getString('CSRF');
+  //   print('Token after save:'+x!);
+  //   return x;
+  // }
 }
