@@ -7,6 +7,9 @@ import 'package:at_your_doorstep/textFieldClass.dart';
 import 'package:blobs/blobs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'api.dart';
+import 'main.dart';
+
 //myFuncs
 
 //end myFuncs
@@ -68,9 +71,27 @@ class _HomePageOperationState extends State<HomePageOperation> {
         body: Container(
           child: Center(
             child: Text("Hello ${_ucFirst(userData['fName'].toString())} ${_ucFirst(userData['lName'].toString())} !"),
+
+
           ),
         )
         ),
       );
   }
+  void logout() async{
+    // logout from the server ...
+    var res = await CallApi().getData('/logout');
+    var body = json.decode(res.body);
+    if(body['success']){
+      SharedPreferences localStorage = await SharedPreferences.getInstance();
+      localStorage.remove('user');
+      localStorage.remove('token');
+      Navigator.push(
+          context,
+          new MaterialPageRoute(
+              builder: (context) => MyApp()));
+    }
+
+  }
+
 }

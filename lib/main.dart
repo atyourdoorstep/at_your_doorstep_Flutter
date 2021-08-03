@@ -52,30 +52,7 @@ saveStringTolocal(String key,String value)async
   SharedPreferences localStorage = await SharedPreferences.getInstance();
   localStorage.setString(key, value);
 }
-// new
-// clearCSRFToken()
-// async {
-//   SharedPreferences preferences = await SharedPreferences.getInstance();
-//   String? x =preferences.getString('CSRF');
-//   if(x!.isNotEmpty) {
-//     await preferences.remove('CSRF');
-//   }
-// }
-// saveToken()
-// async {
-//   //await clearCSRFToken();
-//   var csrf = await CallApi().getCSRF();
-//   print ('in Save:'+csrf['CSRF']);
-//   saveStringTolocal('CSRF',csrf['CSRF']);
-//   checkIfToken();
-// }
-// checkIfToken()
-// async {
-//   SharedPreferences localStorage = await SharedPreferences.getInstance();
-//   String? x=localStorage.getString('CSRF');
-//   print('Token after save:'+x!);
-// }
-// new end
+
 class _MyHomePageState extends State<MyHomePage> {
 
   bool showSpinner = false;
@@ -149,39 +126,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                     'password' : passwordF,//passwordController.text
                                   };
                                   login();
-                                  //var resp=await CallApi().postData(data,  '/mobileLogin');
-                                  //print(await resp);
-                                  //login();
-                                  /*if(mailController.text != "" && passwordController.text != "") {
-                                    if (emailF == mailController.text &&
-                                        passwordF == passwordController.text) {
-                                      CircularProgressIndicator();
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => HomePage()),
-                                      );
-                                    }
-                                    else {
-                                      showDialog(
-                                          context: context,
-                                          builder: (BuildContext context) {
-                                            return AlertDialog(
-                                              title: Text("Warning! "),
-                                              content: Text(
-                                                  "Your Email or password is incorrect!! "),
-                                              actions: [
-                                                FlatButton(
-                                                  child: Text("Ok"),
-                                                  onPressed: () {
-                                                    Navigator.pop(context);
-                                                  },
-                                                ),
-                                              ],
-                                            );
-                                          });
-                                    }
-                                  }*/
+
                                 },
                                 color: Colors.red,
                                 child: Text("Login", style:
@@ -262,7 +207,7 @@ class _MyHomePageState extends State<MyHomePage> {
     EasyLoading.show(status: 'loading...');
     var res = await CallApi().postData(data, '/mobileLogin');
     var body = json.decode(res.body);
-
+    EasyLoading.dismiss();
     //print(body);
     if(body['success']!){
       SharedPreferences localStorage = await SharedPreferences.getInstance();
@@ -276,7 +221,6 @@ class _MyHomePageState extends State<MyHomePage> {
       _showMsg(body['message']);
       //EasyLoading.showToast(body['message']);
     }
-    EasyLoading.dismiss();
 
     setState(() {
       _isLoading = false;

@@ -9,8 +9,8 @@ class CallApi{
 
 
   postData(data, apiUrl) async {
-    //Uri fullUrl = Uri.parse(_url + apiUrl + await _getToken());
-    Uri fullUrl = Uri.parse(_url + apiUrl );
+    Uri fullUrl = Uri.parse(_url + apiUrl + await _getToken());
+    //Uri fullUrl = Uri.parse(_url + apiUrl );
     var head=_setHeaders();
     //print('headers: '+head.toString());
     //head['X-CSRF-TOKEN']=await _getCurrentCSRF();
