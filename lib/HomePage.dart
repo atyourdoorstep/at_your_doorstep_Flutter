@@ -1,9 +1,15 @@
+import 'dart:convert';
+
 import 'package:at_your_doorstep/Constants.dart';
 import 'package:at_your_doorstep/signup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:at_your_doorstep/textFieldClass.dart';
 import 'package:blobs/blobs.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
+//myFuncs
+
+//end myFuncs
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -21,6 +27,24 @@ class HomePageOperation extends StatefulWidget {
 }
 
 class _HomePageOperationState extends State<HomePageOperation> {
+  late Map<String,dynamic> userData;
+  _getUserInfo() async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var userJson = localStorage.getString('user');
+    var user = json.decode(userJson!);
+    setState(() {
+      userData = user;
+    });
+    return user;
+  }
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    userData={};
+    _getUserInfo();
+
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -34,7 +58,7 @@ class _HomePageOperationState extends State<HomePageOperation> {
         ),
         body: Container(
           child: Center(
-            child: Text("HomePage! Hello Mussab Ayub!!!"),
+            child: Text("HomePage! Hello ${userData['fName'].toString()} ${userData['lName']} !"),
           ),
         )
         ),

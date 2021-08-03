@@ -4,10 +4,13 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 class CallApi{
-  final String _url = 'http://10.0.2.2:8000/api';
+  //final String _url = 'http://127.0.0.1:8000/api';//for web
+  final String _url = 'http://10.0.2.2:8000/api';//for emulator
+
 
   postData(data, apiUrl) async {
-    Uri fullUrl = Uri.parse(_url + apiUrl + await _getToken());
+    //Uri fullUrl = Uri.parse(_url + apiUrl + await _getToken());
+    Uri fullUrl = Uri.parse(_url + apiUrl );
     var head=_setHeaders();
     print('headers: '+head.toString());
     //head['X-CSRF-TOKEN']=await _getCurrentCSRF();
@@ -17,11 +20,13 @@ class CallApi{
         body: jsonEncode(data),
         headers: _setHeaders()
     );
-    return resp.body;
+    print('Func resp: '+resp.body.toString());
+    return resp;
 
   }
   getData(apiUrl) async {
-    Uri fullUrl = Uri.parse(_url + apiUrl + await _getToken());
+    //Uri fullUrl = Uri.parse(_url + apiUrl + await _getToken());
+    Uri fullUrl = Uri.parse(_url + apiUrl);
     var resp=await http.get(
         fullUrl,
         headers: _setHeaders()
@@ -48,6 +53,10 @@ class CallApi{
   _getToken() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var token = localStorage.getString('token');
+    if(token!.isEmpty)
+      {
+        return '';
+      }
     return '?token=$token';
   }
   // _getCurrentCSRF() async{

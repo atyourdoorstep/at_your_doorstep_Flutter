@@ -10,6 +10,7 @@ import 'package:at_your_doorstep/textFieldClass.dart';
 import 'package:blobs/blobs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'api.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 
 void main()  {
@@ -34,6 +35,7 @@ class MyApp extends StatelessWidget {
 
       ),
       home: MyHomePage(title: 'At Your Doorstep'),
+      builder: EasyLoading.init(),
     );
   }
 }
@@ -140,12 +142,15 @@ class _MyHomePageState extends State<MyHomePage> {
                                   setState(() {
                                     showSpinner = true;
                                   });
+                                  // mailController.text=emailF;
+                                  // passwordController.text=passwordF;
                                   var data = {
                                     'email' : emailF,//mailController.text,
                                     'password' : passwordF,//passwordController.text
                                   };
-                                  var resp=await CallApi().postData(data,  '/mobileLogin');
-                                  print(await resp);
+                                  login();
+                                  //var resp=await CallApi().postData(data,  '/mobileLogin');
+                                  //print(await resp);
                                   //login();
                                   /*if(mailController.text != "" && passwordController.text != "") {
                                     if (emailF == mailController.text &&
@@ -227,7 +232,20 @@ class _MyHomePageState extends State<MyHomePage> {
 
   }
 
-
+  _showMsg(msg) { //
+    final snackBar = SnackBar(
+      backgroundColor: Color(0xffc76464),
+      content: Text(msg),
+      action: SnackBarAction(
+        textColor: Colors.white,
+        label: 'Close',
+        onPressed: () {
+          // Some code to undo the change!
+        },
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
 
   void login() async{
 
@@ -235,14 +253,18 @@ class _MyHomePageState extends State<MyHomePage> {
       _isLoading = true;
     });
 
+
     var data = {
       'email' : mailController.text,
       'password' : passwordController.text
     };
 
-    var res = await CallApi().postData(data, 'mobileLogin');
+    EasyLoading.show(status: 'loading...');
+    var res = await CallApi().postData(data, '/mobileLogin');
     var body = json.decode(res.body);
-    if(body['success']){
+
+    print(body);
+    if(body['success']!){
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.setString('token', body['token']);
       localStorage.setString('user', json.encode(body['user']));
@@ -251,9 +273,10 @@ class _MyHomePageState extends State<MyHomePage> {
           new MaterialPageRoute(
               builder: (context) => HomePage()));
     }else{
-      //_showMsg(body['message']);
+      _showMsg(body['message']);
+      //EasyLoading.showToast(body['message']);
     }
-
+    EasyLoading.dismiss();
 
     setState(() {
       _isLoading = false;
