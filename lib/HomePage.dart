@@ -37,6 +37,15 @@ class _HomePageOperationState extends State<HomePageOperation> {
     });
     return user;
   }
+  _ucFirst(String str)
+  {
+    if(str.isEmpty)
+      return null;
+    if(str.length<=1)
+      return str.toUpperCase();
+    var x=str.toString();
+    return x.substring(0,1).toUpperCase()+x.substring(1);
+  }
   @override
   void initState() {
     // TODO: implement initState
@@ -58,7 +67,7 @@ class _HomePageOperationState extends State<HomePageOperation> {
         ),
         body: Container(
           child: Center(
-            child: Text("HomePage! Hello ${userData['fName'].toString()} ${userData['lName']} !"),
+            child: Text("Hello ${_ucFirst(userData['fName'].toString())} ${_ucFirst(userData['lName'].toString())} !"),
           ),
         )
         ),

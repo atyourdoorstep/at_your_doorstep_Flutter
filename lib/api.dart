@@ -12,7 +12,7 @@ class CallApi{
     //Uri fullUrl = Uri.parse(_url + apiUrl + await _getToken());
     Uri fullUrl = Uri.parse(_url + apiUrl );
     var head=_setHeaders();
-    print('headers: '+head.toString());
+    //print('headers: '+head.toString());
     //head['X-CSRF-TOKEN']=await _getCurrentCSRF();
     //print('headers: '+head.toString());
     var resp=await http.post(
@@ -20,7 +20,7 @@ class CallApi{
         body: jsonEncode(data),
         headers: _setHeaders()
     );
-    print('Func resp: '+resp.body.toString());
+    //print('Func resp: '+resp.body.toString());
     return resp;
 
   }

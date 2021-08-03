@@ -263,7 +263,7 @@ class _MyHomePageState extends State<MyHomePage> {
     var res = await CallApi().postData(data, '/mobileLogin');
     var body = json.decode(res.body);
 
-    print(body);
+    //print(body);
     if(body['success']!){
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.setString('token', body['token']);
