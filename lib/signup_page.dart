@@ -13,7 +13,6 @@ import 'api.dart';
 
 class Signup extends StatelessWidget {
   const Signup({Key? key}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return SignupOperation();
@@ -37,7 +36,9 @@ class _SignupOperationState extends State<SignupOperation> {
   TextEditingController CNICController = TextEditingController();
   TextEditingController contactController = TextEditingController();
   TextEditingController dateOfBirthController = TextEditingController();
+
   _selectDate(BuildContext context) async {
+
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: selectedData,
@@ -49,6 +50,7 @@ class _SignupOperationState extends State<SignupOperation> {
       });
     dateOfBirthController.text=selectedData.year.toString()+'-'+selectedData.month.toString()+'-'+selectedData.day.toString();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,10 +80,11 @@ class _SignupOperationState extends State<SignupOperation> {
                     //textfieldStyle(textHint: 'Home Address', obscureText: false, textLabel1: 'Home Address ',),
                     //textfieldStyle(textHint: 'Date of Birth', obscureText: false, textLabel1: 'Date Of Birth ',),
                      Column(
+
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         //Text("${selectedData.toLocal()}".split(' ')[0]),
-                        textfieldStyle(textHint: 'Date', obscureText: false, textLabel1: "${selectedData.toLocal()}".split(' ')[0],controllerText: dateOfBirthController,),
+                        textfieldStyle(textHint: 'Date', obscureText: false, textLabel1: 'Date',controllerText: dateOfBirthController,),
                         SizedBox(height: 2.0,),
                         RaisedButton(
                           onPressed: () => _selectDate(context),
@@ -154,9 +157,10 @@ class _SignupOperationState extends State<SignupOperation> {
     };
     print ("data: "+data.toString());
     EasyLoading.show(status: 'loading...');
-    var res = await CallApi().postData(data, '/mobileRegister');
-    EasyLoading.dismiss();
+    var res;
+      res= await CallApi().postData(data, '/mobileRegister');
     var body = json.decode(res.body);
+    EasyLoading.dismiss();
     print(body.toString());
     if(body['success']!){
       SharedPreferences localStorage = await SharedPreferences.getInstance();
