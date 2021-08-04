@@ -9,7 +9,7 @@ import 'package:flutter/material.dart';
 import 'package:at_your_doorstep/textFieldClass.dart';
 import 'package:blobs/blobs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'api.dart';
+//import 'api.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 
@@ -35,7 +35,6 @@ class MyApp extends StatelessWidget {
 
       ),
       home: MyHomePage(title: 'At Your Doorstep'),
-      builder: EasyLoading.init(),
     );
   }
 }
@@ -52,7 +51,6 @@ saveStringTolocal(String key,String value)async
   SharedPreferences localStorage = await SharedPreferences.getInstance();
   localStorage.setString(key, value);
 }
-
 class _MyHomePageState extends State<MyHomePage> {
 
   bool showSpinner = false;
@@ -62,6 +60,7 @@ class _MyHomePageState extends State<MyHomePage> {
   TextEditingController passwordController = TextEditingController();
   String emailF = "mussabayubawan2@gmail.com";
   String passwordF = "mussabzgr8123";
+
   @override
   void deactivate() {
     // TODO: implement deactivate
@@ -74,107 +73,165 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     //saveToken();
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-
       body: SingleChildScrollView(
-          child: Column(
-            children: [
-              Stack(
-                children:[
-                  Center(
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: <Widget>[
-                        SizedBox(
-                          height: 60,
-                        ),
-                        Container(
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Center(child: Image.asset("assets/atyourdoorstep.png", height: 180,width: 180,)),
-                            )),
-                        Center(
-                          child: Text("LOG IN", style:
-                          TextStyle(fontSize: 25, color: Colors.red, fontFamily: "PTSans", fontWeight: FontWeight.w700 , letterSpacing: 2.0)),
-                        ),
-                        SizedBox(
-                          height: 30,
-                        ),
-                        textfieldStyle(textHint: 'Email Address', obscureText: false, textLabel1: 'Email Address',controllerText: mailController,),
-                        textfieldStyle(textHint: 'password', obscureText: true, textLabel1: 'Password ',controllerText: passwordController,),
-                        Padding(
-                          padding: const EdgeInsets.all(10.0),
-                          child: ButtonTheme(
-                            minWidth: double.infinity,
-                            height: 55,
-                            child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: RaisedButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(10.0)),
-                                ),
-                                onPressed: () async {
-                                  setState(() {
-                                    showSpinner = true;
-                                  });
-                                  // mailController.text=emailF;
-                                  // passwordController.text=passwordF;
-                                  var data = {
-                                    'email' : emailF,//mailController.text,
-                                    'password' : passwordF,//passwordController.text
-                                  };
-                                  login();
-
-                                },
-                                color: Colors.red,
-                                child: Text("Login", style:
-                                TextStyle(fontSize: 18, color: Colors.white, fontFamily: "PTSans" )),
+        child: Column(
+          children: [
+            Stack(
+              children:[
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 60,
+                      ),
+                      Container(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(child: Image.asset("assets/atyourdoorstep.png", height: 180,width: 180,)),
+                          )),
+                      Center(
+                        child: Text("LOG IN", style:
+                        TextStyle(fontSize: 25, color: Colors.red, fontFamily: "PTSans", fontWeight: FontWeight.w700 , letterSpacing: 2.0)),
+                      ),
+                      SizedBox(
+                        height: 30,
+                      ),
+                      textfieldStyle(textHint: 'Email Address', obscureText: false, textLabel1: 'Email Address',controllerText: mailController,),
+                      textfieldStyle(textHint: 'password', obscureText: true, textLabel1: 'Password ',controllerText: passwordController,),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: ButtonTheme(
+                          minWidth: double.infinity,
+                          height: 55,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: RaisedButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
                               ),
+                              onPressed: () async {
+                                setState(() {
+                                  showSpinner = true;
+                                });
+                                // mailController.text=emailF;
+                                // passwordController.text=passwordF;
+                                var data = {
+                                  'email' : emailF,//mailController.text,
+                                  'password' : passwordF,//passwordController.text
+                                };
+                                login();
+                              },
+                              color: Colors.red,
+                              child: Text("Login", style:
+                              TextStyle(fontSize: 18, color: Colors.white, fontFamily: "PTSans" )),
                             ),
                           ),
                         ),
-                        Padding(
-                          padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                          child: ButtonTheme(
-                            minWidth: double.infinity,
-                            height: 55,
-                            child: Padding(
-                              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                              child: RaisedButton(
-                                shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.all(Radius.circular(10.0),
-                                  ),
-                                  side: BorderSide(color: Colors.red),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                        child: ButtonTheme(
+                          minWidth: double.infinity,
+                          height: 55,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                            child: RaisedButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10.0),
                                 ),
-                                onPressed: () {
-                                  //print(mailController);
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Signup()),
-                                  );
-                                },
-                                color: Colors.white,
-                                child: Text("Signup", style:
-                                TextStyle(fontSize: 18, color: Colors.red, fontFamily: "PTSans" )),
+                                side: BorderSide(color: Colors.red),
                               ),
+                              onPressed: () {
+                                //print(mailController);
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Signup()),
+                                );
+                              },
+                              color: Colors.white,
+                              child: Text("Signup", style:
+                              TextStyle(fontSize: 18, color: Colors.red, fontFamily: "PTSans" )),
                             ),
                           ),
                         ),
-                      ],
-                    ),
+                      ),
+                      SizedBox(
+                        height: 25.0,
+                      ),
+                      Row(
+                        children: [
+                          buildDivider(),
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Text("OR", style:
+                            TextStyle(color: Color(0xFFD9D9D9), fontFamily: "PTSans" )),
+                          ),
+                          buildDivider(),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                        child: ButtonTheme(
+                          minWidth: double.infinity,
+                          height: 55,
+                          child: Padding(
+                            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                            child: RaisedButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10.0),
+                                ),
+                                // side: BorderSide(color: Colors.red),
+                              ),
+                              onPressed: () {
+                                var user={
+                                  'id':0,
+                                'fName':'guest',
+                                'lName':'guest',
+                                'lName':'guest',};
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => HomePage()),
+                                );
+                              },
+                              color: Colors.white,
+                              child: Text("As a Guest", style:
+                              TextStyle(fontSize: 18, color: Colors.red, fontFamily: "PTSans", fontWeight: FontWeight.w500 )),
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        height: 10.0,
+                      ),
+                    ],
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+          ],
         ),
-      // This trailing comma makes auto-formatting nicer for build methods.
+      ),
     );
 
 
+  }
+
+  Expanded buildDivider(){
+    return Expanded(
+      child: Divider(
+        color: Color(0xFFD9D9D9),
+        height: 1.5,
+      ),);
   }
 
   _showMsg(msg) { //
@@ -193,12 +250,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   void login() async{
-
     setState(() {
       _isLoading = true;
     });
-
-
     var data = {
       'email' : mailController.text,
       'password' : passwordController.text
@@ -221,14 +275,8 @@ class _MyHomePageState extends State<MyHomePage> {
       _showMsg(body['message']);
       //EasyLoading.showToast(body['message']);
     }
-
     setState(() {
       _isLoading = false;
     });
-
-
-
-
   }
 }
-

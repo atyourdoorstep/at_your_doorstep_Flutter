@@ -57,70 +57,70 @@ class _SignupOperationState extends State<SignupOperation> {
       body: SingleChildScrollView(
         child: Column(
           children: [
-          Stack(
-            children: [
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    SizedBox(
-                      height: 40,
-                    ),
-                    Center(
-                      child: Text("SIGN UP", style:
-                      TextStyle(fontSize: 30, color: Colors.red, fontFamily: "PTSans", fontWeight: FontWeight.w700 , letterSpacing: 2.0)),
-                    ),
-                    SizedBox(
-                      height: 20,
-                    ),
-                    textfieldStyle(textHint: 'First Name', obscureText: false, textLabel1: 'First Name ',controllerText: firstNameController,),
-                    textfieldStyle(textHint: 'Last Name', obscureText: false, textLabel1: 'Last Name ',controllerText: lastNameController,),
-                    textfieldStyle(textHint: 'CNIC', obscureText: false, textLabel1: 'CNIC ',controllerText: CNICController,),
-                    textfieldStyle(textHint: 'Phone Number', obscureText: false, textLabel1: 'Phone Number ',controllerText: contactController,),
-                    //textfieldStyle(textHint: 'Home Address', obscureText: false, textLabel1: 'Home Address ',),
-                    //textfieldStyle(textHint: 'Date of Birth', obscureText: false, textLabel1: 'Date Of Birth ',),
-                     Column(
+            Stack(
+              children: [
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                      SizedBox(
+                        height: 40,
+                      ),
+                      Center(
+                        child: Text("SIGN UP", style:
+                        TextStyle(fontSize: 30, color: Colors.red, fontFamily: "PTSans", fontWeight: FontWeight.w700 , letterSpacing: 2.0)),
+                      ),
+                      SizedBox(
+                        height: 20,
+                      ),
+                      textfieldStyle(textHint: 'First Name', obscureText: false, textLabel1: 'First Name ',controllerText: firstNameController,),
+                      textfieldStyle(textHint: 'Last Name', obscureText: false, textLabel1: 'Last Name ',controllerText: lastNameController,),
+                      textfieldStyle(textHint: 'CNIC', obscureText: false, textLabel1: 'CNIC ',controllerText: CNICController,),
+                      textfieldStyle(textHint: 'Phone Number', obscureText: false, textLabel1: 'Phone Number ',controllerText: contactController,),
+                      //textfieldStyle(textHint: 'Home Address', obscureText: false, textLabel1: 'Home Address ',),
+                      //textfieldStyle(textHint: 'Date of Birth', obscureText: false, textLabel1: 'Date Of Birth ',),
+                      Column(
 
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        //Text("${selectedData.toLocal()}".split(' ')[0]),
-                        textfieldStyle(textHint: 'Date', obscureText: false, textLabel1: 'Date',controllerText: dateOfBirthController,),
-                        SizedBox(height: 2.0,),
-                        RaisedButton(
-                          onPressed: () => _selectDate(context),
-                          child: Text('Select date'),
-                        ),
-                      ],
-                    ),
-                    textfieldStyle(textHint: 'Email Address', obscureText: false, textLabel1: 'Email Address ',controllerText: mailController,),
-                    textfieldStyle(textHint: 'Password', obscureText: true, textLabel1: 'Password',controllerText: passwordController,),
-                    textfieldStyle(textHint: 'Confirm Password', obscureText: true, textLabel1: 'Confirm Password ',controllerText: confirmPasswordController,),
-                    Padding(
-                      padding: const EdgeInsets.all(10.0),
-                      child: ButtonTheme(
-                        minWidth: double.infinity,
-                        height: 55,
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: RaisedButton(
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          //Text("${selectedData.toLocal()}".split(' ')[0]),
+                          textfieldStyle(textHint: 'Date', obscureText: false, textLabel1: 'Date',controllerText: dateOfBirthController,
+                            suffixButton: IconButton(
+                              icon: Icon(Icons.calendar_today),
+                              onPressed: () => _selectDate(context),
+
+                            ),),
+                        ],
+                      ),
+                      textfieldStyle(textHint: 'Email Address', obscureText: false, textLabel1: 'Email Address ',controllerText: mailController,),
+                      textfieldStyle(textHint: 'Password', obscureText: true, textLabel1: 'Password',controllerText: passwordController,),
+                      textfieldStyle(textHint: 'Confirm Password', obscureText: true, textLabel1: 'Confirm Password ',controllerText: confirmPasswordController,),
+                      Padding(
+                        padding: const EdgeInsets.all(10.0),
+                        child: ButtonTheme(
+                          minWidth: double.infinity,
+                          height: 55,
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: RaisedButton(
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10.0)),
+                              ),
+                              onPressed: () {
+                                _handleLogin();
+                              },
+                              color: Colors.red,
+                              child: Text("Next", style:
+                              TextStyle(fontSize: 18, color: Colors.white, fontFamily: "PTSans" )),
                             ),
-                            onPressed: () {
-                              _handleLogin();
-                            },
-                            color: Colors.red,
-                            child: Text("Next", style:
-                            TextStyle(fontSize: 18, color: Colors.white, fontFamily: "PTSans" )),
                           ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
+              ],
+            ),
           ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
@@ -158,7 +158,7 @@ class _SignupOperationState extends State<SignupOperation> {
     print ("data: "+data.toString());
     EasyLoading.show(status: 'loading...');
     var res;
-      res= await CallApi().postData(data, '/mobileRegister');
+    res= await CallApi().postData(data, '/mobileRegister');
     var body = json.decode(res.body);
     EasyLoading.dismiss();
     print(body.toString());
@@ -176,15 +176,8 @@ class _SignupOperationState extends State<SignupOperation> {
       _showMsg(body['message']);
       //EasyLoading.showToast(body['message']);
     }
-
-
-
-
     setState(() {
       _isLoading = false;
     });
-
-
-
   }
 }
