@@ -5,7 +5,7 @@ import 'package:at_your_doorstep/signuppage2.dart';
 import 'package:flutter/material.dart';
 import 'package:at_your_doorstep/textFieldClass.dart';
 import 'package:blobs/blobs.dart';
-import 'package:flutter_easyloading/flutter_easyloading.dart';
+// import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'HomePage.dart';
@@ -50,7 +50,11 @@ class _SignupOperationState extends State<SignupOperation> {
       });
     dateOfBirthController.text=selectedData.year.toString()+'-'+selectedData.month.toString()+'-'+selectedData.day.toString();
   }
-
+@override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,8 +92,9 @@ class _SignupOperationState extends State<SignupOperation> {
                             suffixButton: IconButton(
                               icon: Icon(Icons.calendar_today),
                               onPressed: () => _selectDate(context),
+                            ),
 
-                            ),),
+                          ),
                         ],
                       ),
                       textfieldStyle(textHint: 'Email Address', obscureText: false, textLabel1: 'Email Address ',controllerText: mailController,),
@@ -156,11 +161,11 @@ class _SignupOperationState extends State<SignupOperation> {
       'date_of_birth' : dateOfBirthController.text,
     };
     print ("data: "+data.toString());
-    EasyLoading.show(status: 'loading...');
+    //EasyLoading.show(status: 'loading...');
     var res;
     res= await CallApi().postData(data, '/mobileRegister');
     var body = json.decode(res.body);
-    EasyLoading.dismiss();
+    //EasyLoading.dismiss();
     print(body.toString());
     if(body['success']!){
       SharedPreferences localStorage = await SharedPreferences.getInstance();

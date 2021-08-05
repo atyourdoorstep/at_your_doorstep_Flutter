@@ -74,6 +74,7 @@ class _HomePageOperationState extends State<HomePageOperation>
               itemBuilder: (context)=>[
                 PopupMenuItem<int>(value: 0,child: Text("Profile"),),
                 PopupMenuItem<int>(value: 1,child: Text("Sign Out"),),
+
               ],
             ),
           ],
@@ -187,7 +188,7 @@ class _HomePageOperationState extends State<HomePageOperation>
 
   void logout() async{
     // logout from the server ...
-    var res = await CallApi().getData('/logout');
+    var res = await CallApi().postData({},'/mobileLogOut');
     var body = json.decode(res.body);
     if(body['success']){
       SharedPreferences localStorage = await SharedPreferences.getInstance();
