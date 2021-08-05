@@ -27,7 +27,7 @@ class SignupOperation extends StatefulWidget {
 
 class _SignupOperationState extends State<SignupOperation> {
   bool _isLoading = false;
-  DateTime  selectedData=DateTime.now();
+  DateTime  selectedData=DateTime((DateTime.now().year-18),DateTime.now().month,DateTime.now().day);
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController mailController = TextEditingController();
@@ -38,17 +38,19 @@ class _SignupOperationState extends State<SignupOperation> {
   TextEditingController dateOfBirthController = TextEditingController();
 
   _selectDate(BuildContext context) async {
-
+    DateTime today = DateTime.now();
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: selectedData,
         firstDate: DateTime(1920, 8),
-        lastDate: DateTime(2101));
+        lastDate: DateTime((today.year-18),today.month,today.day),
+    );
     if (picked != null && picked != selectedData)
       setState(() {
         selectedData = picked;
       });
     dateOfBirthController.text=selectedData.year.toString()+'-'+selectedData.month.toString()+'-'+selectedData.day.toString();
+
   }
 @override
   void initState() {
@@ -160,7 +162,6 @@ class _SignupOperationState extends State<SignupOperation> {
       'CNIC' : CNICController.text,
       'date_of_birth' : dateOfBirthController.text,
     };
-    print ("data: "+data.toString());
     //EasyLoading.show(status: 'loading...');
     var res;
     res= await CallApi().postData(data, '/mobileRegister');
