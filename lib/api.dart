@@ -59,22 +59,22 @@ class CallApi{
     //   }
     return '?token=$token';
   }
-  // _getCurrentCSRF() async{
-  //   SharedPreferences localStorage = await SharedPreferences.getInstance();
-  //   var CSRF = localStorage.getString('CSRF');
-  //   return CSRF;
-  // }
-  //  getCSRF()
-  //  async {
-  //    var CSRF=await CallApi().getData('getSessionToken');
-  //    print('In func:'+CSRF.toString());
-  //    return CSRF;
-  // }
-  // getSavedCSRF()
-  // async {
-  //   SharedPreferences localStorage = await SharedPreferences.getInstance();
-  //   String? x=localStorage.getString('CSRF');
-  //   print('Token after save:'+x!);
-  //   return x;
-  // }
+// _getCurrentCSRF() async{
+//   SharedPreferences localStorage = await SharedPreferences.getInstance();
+//   var CSRF = localStorage.getString('CSRF');
+//   return CSRF;
+// }
+//  getCSRF()
+//  async {
+//    var CSRF=await CallApi().getData('getSessionToken');
+//    print('In func:'+CSRF.toString());
+//    return CSRF;
+// }
+// getSavedCSRF()
+// async {
+//   SharedPreferences localStorage = await SharedPreferences.getInstance();
+//   String? x=localStorage.getString('CSRF');
+//   print('Token after save:'+x!);
+//   return x;
+// }
 }

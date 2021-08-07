@@ -1,20 +1,23 @@
 import 'dart:convert';
-import 'dart:ffi';
 
 import 'package:at_your_doorstep/Constants.dart';
 import 'package:at_your_doorstep/HomePage.dart';
 import 'package:at_your_doorstep/api.dart';
 import 'package:at_your_doorstep/signup_page.dart';
+import 'package:at_your_doorstep/userProfile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:at_your_doorstep/textFieldClass.dart';
 import 'package:blobs/blobs.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'api.dart';
+//import 'api.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
+
 void main()  {
-  //runApp(HomePage());
+  // runApp(MaterialApp(
+  //   home: editProfile(),
+  // ));
 
   //return;
   runApp(MyApp());
@@ -25,10 +28,10 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return MaterialApp(
       title: 'At Your Doorstep',
       debugShowCheckedModeBanner: false,
-      //builder: EasyLoading.init(),
       theme: ThemeData(
 
         primarySwatch: Colors.red,
@@ -47,7 +50,6 @@ class MyHomePage extends StatefulWidget {
   @override
   _MyHomePageState createState() => _MyHomePageState();
 }
-
 class _MyHomePageState extends State<MyHomePage> {
 
   bool showSpinner = false;
@@ -70,22 +72,41 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     _checkStatus();
   }
-
-  @override
   _checkStatus()async
   {
+    EasyLoading.show(status: 'loading...');
+    print('in Func check');
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     String? token= await localStorage.getString('token');
-    if(token ==null)
+    var user = ( await localStorage.getString('user'));
+    print (user);
+    print (token);
+    if(token ==null) {
+      EasyLoading.dismiss();
       return;
+    }
     if(token.length>0)
-      {
-        Navigator.push(
-            context,
-            new MaterialPageRoute(
-                builder: (context) => HomePage()));
-      }
+    {
+      var resp= await CallApi().postData(token, '/getCurrentUser');
+      var body = json.decode(resp.body);
+      if(body['success'])
+        {
+          print (body);
+          EasyLoading.dismiss();
+          Navigator.push(
+                  context,
+                  new MaterialPageRoute(
+                      builder: (context) => HomePage()));
+        }
+
+
+      // Navigator.push(
+      //     context,
+      //     new MaterialPageRoute(
+      //         builder: (context) => HomePage()));
+    }
   }
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: SingleChildScrollView(
@@ -206,20 +227,20 @@ class _MyHomePageState extends State<MyHomePage> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(Radius.circular(10.0),
                                 ),
-                                // side: BorderSide(color: Colors.red),
+                               // side: BorderSide(color: Colors.red),
                               ),
                               onPressed: () async {
                                 var user={
-                                'fName':'Guest',
-                                'lName':'Account',
-                                'CNIC':0,
-                                'contact':0,
-                                'email':''};
+                                  'fName':'Guest',
+                                  'lName':'Account',
+                                  'CNIC':0,
+                                  'contact':0,
+                                  'email':''};
                                 await toLocal('user',json.encode(user));
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => HomePage()),
+                                      builder: (context) => CupertinoHomePage()),
                                 );
                               },
                               color: Colors.white,
@@ -245,13 +266,13 @@ class _MyHomePageState extends State<MyHomePage> {
 
   }
 
-  Expanded buildDivider(){
+Expanded buildDivider(){
     return Expanded(
       child: Divider(
         color: Color(0xFFD9D9D9),
-        height: 1.5,
+      height: 1.5,
       ),);
-  }
+}
 
   _showMsg(msg) { //
     final snackBar = SnackBar(
@@ -295,7 +316,7 @@ class _MyHomePageState extends State<MyHomePage> {
       Navigator.push(
           context,
           new MaterialPageRoute(
-              builder: (context) => HomePage()));
+              builder: (context) => CupertinoHomePage()));
     }else{
       _showMsg(body['message']);
       //EasyLoading.showToast(body['message']);

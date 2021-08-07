@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'Constants.dart';
 
 class textfieldStyle extends StatelessWidget {
-  final String textLabel1;
+  final textLabel1;
   final keyBoardType;
   final Icon1;
   final String textHint;
@@ -10,13 +10,15 @@ class textfieldStyle extends StatelessWidget {
   final bool obscureText;
   final controllerText;
   final suffixButton;
+  final submit;
+  final focus;
 
   textfieldStyle(
-      {required this.textLabel1,
+      {this.textLabel1,
         this.keyBoardType,
         this.Icon1,
         required this.textHint,
-        this.onChange,
+        this.onChange, this.submit,this.focus,
         required this.obscureText, this.controllerText, this.suffixButton});
 
   @override
@@ -26,13 +28,12 @@ class textfieldStyle extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(5.0),
         child: TextFormField(
+          focusNode: focus,
           obscureText: obscureText,
           onChanged: onChange,
           controller: controllerText,
           cursorColor: Colors.blue,
           decoration: InputDecoration(
-            //filled: true,
-            //fillColor: Colors.black12,
             suffixIcon: suffixButton,
             hintText: textHint,
             labelText: textLabel1,

@@ -39,17 +39,15 @@ class _SignupOperation2State extends State<SignupOperation2> {
                      size: 300,
                      edgesCount: 3,
                      styles: BlobStyles(
-                       color: Colors.red.shade300,
+                       color: Colors.red,
                      ),
                    ),
-                   Padding(
-                     padding: const EdgeInsets.all(8.0),
-                     child: Blob.random(
-                       size: 150,
-                       edgesCount: 3,
-                       styles: BlobStyles(
-                         color: Colors.grey.shade300,
-                       ),
+                   Blob.animatedRandom(
+                     duration: Duration(milliseconds: 400),
+                     size: 200,
+                     edgesCount: 3,
+                     styles: BlobStyles(
+                       color: Colors.grey,
                      ),
                    ),
                  ],

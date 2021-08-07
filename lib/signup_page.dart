@@ -5,7 +5,7 @@ import 'package:at_your_doorstep/signuppage2.dart';
 import 'package:flutter/material.dart';
 import 'package:at_your_doorstep/textFieldClass.dart';
 import 'package:blobs/blobs.dart';
-// import 'package:flutter_easyloading/flutter_easyloading.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'HomePage.dart';
@@ -27,7 +27,7 @@ class SignupOperation extends StatefulWidget {
 
 class _SignupOperationState extends State<SignupOperation> {
   bool _isLoading = false;
-  DateTime  selectedData=DateTime((DateTime.now().year-18),DateTime.now().month,DateTime.now().day);
+  DateTime  selectedData=DateTime.now();
   TextEditingController firstNameController = TextEditingController();
   TextEditingController lastNameController = TextEditingController();
   TextEditingController mailController = TextEditingController();
@@ -38,25 +38,19 @@ class _SignupOperationState extends State<SignupOperation> {
   TextEditingController dateOfBirthController = TextEditingController();
 
   _selectDate(BuildContext context) async {
-    DateTime today = DateTime.now();
+
     final DateTime? picked = await showDatePicker(
         context: context,
         initialDate: selectedData,
         firstDate: DateTime(1920, 8),
-        lastDate: DateTime((today.year-18),today.month,today.day),
-    );
+        lastDate: DateTime(2101));
     if (picked != null && picked != selectedData)
       setState(() {
         selectedData = picked;
       });
     dateOfBirthController.text=selectedData.year.toString()+'-'+selectedData.month.toString()+'-'+selectedData.day.toString();
+  }
 
-  }
-@override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,12 +85,12 @@ class _SignupOperationState extends State<SignupOperation> {
                         children: <Widget>[
                           //Text("${selectedData.toLocal()}".split(' ')[0]),
                           textfieldStyle(textHint: 'Date', obscureText: false, textLabel1: 'Date',controllerText: dateOfBirthController,
+                            focus: AlwaysDisable(),
                             suffixButton: IconButton(
                               icon: Icon(Icons.calendar_today),
                               onPressed: () => _selectDate(context),
-                            ),
 
-                          ),
+                          ),),
                         ],
                       ),
                       textfieldStyle(textHint: 'Email Address', obscureText: false, textLabel1: 'Email Address ',controllerText: mailController,),
@@ -176,7 +170,7 @@ class _SignupOperationState extends State<SignupOperation> {
       Navigator.push(
           context,
           new MaterialPageRoute(
-              builder: (context) => HomePage()));
+              builder: (context) => CupertinoHomePage()));
     }
     else{
       _showMsg(body['message']);
@@ -186,4 +180,9 @@ class _SignupOperationState extends State<SignupOperation> {
       _isLoading = false;
     });
   }
+}
+
+class AlwaysDisable extends FocusNode{
+  @override
+  bool get hasFocus => false;
 }
