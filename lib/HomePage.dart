@@ -206,12 +206,9 @@ class _HomePageOperationState extends State<HomePageOperation>
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.remove('user');
       localStorage.remove('token');
-      Navigator.pop(context);
-      Navigator.pop(context);
-      // Navigator.push(
-      //     context,
-      //     new MaterialPageRoute(
-      //         builder: (context) => MyApp()));
+      Navigator.of(
+          context,
+         rootNavigator: true,).pushNamed('LoginPage');
     }
 
   }

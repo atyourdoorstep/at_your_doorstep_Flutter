@@ -38,6 +38,10 @@ class MyApp extends StatelessWidget {
 
       ),
       home: MyHomePage(title: 'At Your Doorstep'),
+      initialRoute: 'LoginPage',
+      routes: {
+        'LoginPage':(context)=>MyHomePage(title: 'AtYourDoorStep')
+      },
       builder: EasyLoading.init(),
     );
   }
@@ -81,30 +85,25 @@ class _MyHomePageState extends State<MyHomePage> {
     var user = ( await localStorage.getString('user'));
     print (user);
     print (token);
-    if(token ==null) {
-      EasyLoading.dismiss();
-      return;
-    }
-    if(token.length>0)
+    if(token !=null&&token.length>0)
     {
       var resp= await CallApi().postData(token, '/getCurrentUser');
       var body = json.decode(resp.body);
       if(body['success'])
         {
-          print (body);
           EasyLoading.dismiss();
+          print (body);
           Navigator.push(
                   context,
                   new MaterialPageRoute(
-                      builder: (context) => HomePage()));
+                      builder: (context) => CupertinoHomePage()));
         }
-
-
       // Navigator.push(
       //     context,
       //     new MaterialPageRoute(
       //         builder: (context) => HomePage()));
     }
+    EasyLoading.dismiss();
   }
   @override
   Widget build(BuildContext context) {
