@@ -87,9 +87,9 @@ class _MyHomePageState extends State<MyHomePage> {
     print (token);
     if(token !=null&&token.length>0)
     {
-      var resp= await CallApi().postData(token, '/getCurrentUser');
+      var resp= await CallApi().postData(token, '/getCurrentUser')  ;
       var body = json.decode(resp.body);
-      if (body!=null) {
+      if (body['success']!=null) {
         print('In status: ' + body.toString());
         if (body['success']) {
           EasyLoading.dismiss();
@@ -99,6 +99,9 @@ class _MyHomePageState extends State<MyHomePage> {
               new MaterialPageRoute(
                   builder: (context) => CupertinoHomePage()));
         }
+      }
+      else {
+        _showMsg('connection error');
       }
       // Navigator.push(
       //     context,
@@ -294,8 +297,7 @@ Expanded buildDivider(){
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     localStorage.setString(key, val);
   }
-  void login(var data ) async{
-
+  void login(var data ) async {
     print('in FUNC');
     setState(() {
       _isLoading = true;
@@ -309,19 +311,22 @@ Expanded buildDivider(){
     var res = await CallApi().postData(data, '/mobileLogin');
     var body = json.decode(res.body);
     EasyLoading.dismiss();
-    //print(body);
-    if(body['success']!){
-      SharedPreferences localStorage = await SharedPreferences.getInstance();
-      localStorage.setString('token', body['token']);
-      localStorage.setString('user', json.encode(body['user']));
-      Navigator.push(
-          context,
-          new MaterialPageRoute(
-              builder: (context) => CupertinoHomePage()));
-    }else{
-      _showMsg(body['message']);
-      //EasyLoading.showToast(body['message']);
-    }
+    print(body);
+    if (body != null){
+      if(body['success']!=null)
+      if (body['success']) {
+        SharedPreferences localStorage = await SharedPreferences.getInstance();
+        localStorage.setString('token', body['token']);
+        localStorage.setString('user', json.encode(body['user']));
+        Navigator.push(
+            context,
+            new MaterialPageRoute(
+                builder: (context) => CupertinoHomePage()));
+      } else {
+        _showMsg(body['message']);
+        //EasyLoading.showToast(body['message']);
+      }
+  }
     setState(() {
       _isLoading = false;
     });

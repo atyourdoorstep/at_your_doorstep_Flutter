@@ -8,6 +8,7 @@ import 'package:at_your_doorstep/signup_page.dart';
 import 'package:flutter/material.dart';
 import 'package:at_your_doorstep/textFieldClass.dart';
 import 'package:blobs/blobs.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class editProfile extends StatelessWidget {
@@ -156,6 +157,12 @@ class EditProfileScreen extends StatefulWidget {
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
+
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController lastNameController = TextEditingController();
+  TextEditingController mailController = TextEditingController();
+  TextEditingController phoneController = TextEditingController();
+
   late Map<String,dynamic> userData;
   _getUserInfo() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
@@ -163,6 +170,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     var user = json.decode(userJson!);
     setState(() {
       userData = user;
+      firstNameController.text=_ucFirst(userData['fName'].toString());
+      lastNameController.text=_ucFirst(userData['lName'].toString());
+      mailController.text= userData['email'].toString();
+      phoneController.text= userData['contact'].toString();
     });
     return user;
   }
@@ -181,6 +192,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     super.initState();
     userData={};
     _getUserInfo();
+
   }
   @override
   Widget build(BuildContext context) {
@@ -207,10 +219,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       SizedBox(
                         height: 20,
                       ),
-                      textfieldStyle(textHint: _ucFirst(userData['fName'].toString()), obscureText: false, textLabel1:'First Name' ),
-                      textfieldStyle(textHint:_ucFirst(userData['lName'].toString()) , obscureText: false, textLabel1: 'Last Name'),
-                      textfieldStyle(textHint: userData['email'].toString(), obscureText: false, textLabel1: 'Email',),
-                      textfieldStyle(textHint: userData['contact'].toString(), obscureText: false, textLabel1: 'Phone Number',),
+                      Stack(
+                        alignment: AlignmentDirectional.bottomEnd,
+                        children: [
+                          CircleAvatar(
+                            backgroundColor: Colors.grey,
+                            radius: 60,
+                            backgroundImage: NetworkImage("https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png"),
+                          ),
+                          CircleAvatar(child: Icon(Icons.edit, size: 15,),),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      textfieldStyle(textHint: _ucFirst(userData['fName'].toString()), obscureText: false, textLabel1:'First Name', controllerText: firstNameController, ),
+                      textfieldStyle(textHint:_ucFirst(userData['lName'].toString()) , obscureText: false, textLabel1: 'Last Name', controllerText: lastNameController,),
+                      textfieldStyle(textHint: userData['email'].toString(), obscureText: false, textLabel1: 'Email',controllerText: mailController,),
+                      textfieldStyle(textHint: userData['contact'].toString(), obscureText: false, textLabel1: 'Phone Number',controllerText: phoneController,),
                       Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: ButtonTheme(
@@ -222,8 +248,17 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
                               ),
-                              onPressed: () {
-                                   },
+                              onPressed: ()
+                              {
+                                _save(
+                                  {
+                                    'fName':firstNameController.text,
+                                    'lName':lastNameController.text,
+                                    'email':mailController.text,
+                                    'contact':phoneController.text
+                                  }
+                                );
+                              },
                               color: Colors.red,
                               child: Text("Save", style:
                               TextStyle(fontSize: 18, color: Colors.white, fontFamily: "PTSans" )),
@@ -240,6 +275,42 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         ),
       ),
     );
+  }
+  _showMsg(msg) { //
+    final snackBar = SnackBar(
+      backgroundColor: Color(0xffc76464),
+      content: Text(msg),
+      action: SnackBarAction(
+        textColor: Colors.white,
+        label: 'Close',
+        onPressed: () {
+          // Some code to undo the change!
+        },
+      ),
+    );
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+  _save(var data ) async {
+    print('in FUNC');
+    // var data = {
+    //   'email' : mailController.text,
+    //   'password' : passwordController.text
+    // };
+
+    EasyLoading.show(status: 'loading...');
+    var res = await CallApi().postData(data, '/updateUser');
+    var body = json.decode(res.body);
+    EasyLoading.dismiss();
+    print(body);
+    if (body != null){
+      if (body['success']!) {
+        print(body.toString());
+
+      } else {
+        _showMsg(body['message']);
+        //EasyLoading.showToast(body['message']);
+      }
+    }
   }
 
 }

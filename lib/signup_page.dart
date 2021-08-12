@@ -164,7 +164,8 @@ class _SignupOperationState extends State<SignupOperation> {
     //EasyLoading.dismiss();
     print(body.toString());
     EasyLoading.dismiss();
-    if(body['success']!){
+    if(body['success']!=null)
+    if(body['success']){
       SharedPreferences localStorage = await SharedPreferences.getInstance();
       localStorage.setString('token', body['token']);
       localStorage.setString('user', json.encode(body['user']));
@@ -175,7 +176,9 @@ class _SignupOperationState extends State<SignupOperation> {
               builder: (context) => CupertinoHomePage()));
     }
     else{
-      _showMsg(body['message']);
+      _showMsg(body['message'][0]);
+      print('sup: '+body['message'][0].toString());
+
       //EasyLoading.showToast(body['message']);
     }
     setState(() {
