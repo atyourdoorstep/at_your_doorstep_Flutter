@@ -73,7 +73,7 @@ class _EditProfileOpState extends State<EditProfileOp> {
                       children: [
                         Text("Hello!", style:
                         TextStyle(fontSize: 17, color: Colors.black, fontFamily: "PTSans", fontWeight: FontWeight.w500 )),
-                        Text('${_ucFirst(userData['fName'].toString())} ${_ucFirst(userData['lName'].toString())}', style:
+                        Text('${_ucFirst(userD['fName'].toString())} ${_ucFirst(userD['lName'].toString())}', style:
                         TextStyle(fontSize: 26, color: Colors.black, fontFamily: "PTSans", fontWeight: FontWeight.bold)),
                       ],
                     ),
@@ -290,6 +290,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     );
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
+  toLocal(String key,String val)async
+  {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    localStorage.setString(key, val);
+  }
   _save(var data ) async {
     print('in FUNC');
     // var data = {
@@ -305,7 +310,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     if (body != null){
       if (body['success']!) {
         print(body.toString());
-
+        toLocal('user', json.encode(body['user']));
+        SharedPreferences localStorage = await SharedPreferences.getInstance();
+        var userJson = localStorage.getString('user');
+        var user = json.decode(userJson!);
+        setState(() {
+          userD = user;
+        });
       } else {
         _showMsg(body['message']);
         //EasyLoading.showToast(body['message']);

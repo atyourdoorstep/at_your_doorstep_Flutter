@@ -31,14 +31,17 @@ class HomePageOperation extends StatefulWidget {
 class _HomePageOperationState extends State<HomePageOperation>
     with TickerProviderStateMixin {
 
+  var checkUser = {};
   late Map<String,dynamic> userData;
-  _getUserInfo() async {
+  getUserInfo() async {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     var userJson = localStorage.getString('user');
     var user = json.decode(userJson!);
     setState(() {
       userData = user;
     });
+    userD = userData;
+    print("shhah $userD");
     return user;
   }
   _ucFirst(String str)
@@ -58,7 +61,8 @@ class _HomePageOperationState extends State<HomePageOperation>
     // TODO: implement initState
     super.initState();
     userData={};
-    _getUserInfo();
+    getUserInfo();
+
 
   }
 
@@ -82,7 +86,7 @@ class _HomePageOperationState extends State<HomePageOperation>
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('Hi, ${_ucFirst(userData['fName'].toString())} ${_ucFirst(userData['lName'].toString())}',style:
+                  Text('Hi, ${_ucFirst(userD['fName'].toString())} ${_ucFirst(userD['lName'].toString())}',style:
                   TextStyle(fontSize: 17, color: Colors.white, fontFamily: "PTSans" )),
                   Row(
                     children: [
