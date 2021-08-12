@@ -89,15 +89,17 @@ class _MyHomePageState extends State<MyHomePage> {
     {
       var resp= await CallApi().postData(token, '/getCurrentUser');
       var body = json.decode(resp.body);
-      if(body['success'])
-        {
+      if (body!=null) {
+        print('In status: ' + body.toString());
+        if (body['success']) {
           EasyLoading.dismiss();
-          print (body);
+          print(body);
           Navigator.push(
-                  context,
-                  new MaterialPageRoute(
-                      builder: (context) => CupertinoHomePage()));
+              context,
+              new MaterialPageRoute(
+                  builder: (context) => CupertinoHomePage()));
         }
+      }
       // Navigator.push(
       //     context,
       //     new MaterialPageRoute(
