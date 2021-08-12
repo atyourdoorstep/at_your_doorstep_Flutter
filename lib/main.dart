@@ -326,6 +326,10 @@ Expanded buildDivider(){
         _showMsg(body['message']);
         //EasyLoading.showToast(body['message']);
       }
+      else
+        {
+          _showMsg('Communication Error');
+        }
   }
     setState(() {
       _isLoading = false;

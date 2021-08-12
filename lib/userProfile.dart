@@ -29,31 +29,32 @@ class EditProfileOp extends StatefulWidget {
 
 class _EditProfileOpState extends State<EditProfileOp> {
   late Map<String,dynamic> userData;
-  _getUserInfo() async {
-    SharedPreferences localStorage = await SharedPreferences.getInstance();
-    var userJson = localStorage.getString('user');
-    var user = json.decode(userJson!);
-    setState(() {
-      userData = user;
-    });
-    return user;
-  }
-  _ucFirst(String str)
-  {
-    if(str.isEmpty)
-      return null;
-    if(str.length<=1)
-      return str.toUpperCase();
-    var x=str.toString();
-    return x.substring(0,1).toUpperCase()+x.substring(1);
-  }
+  TextEditingController fullNameController = TextEditingController();
+  // _getUserInfo() async {
+  //   SharedPreferences localStorage = await SharedPreferences.getInstance();
+  //   var userJson = localStorage.getString('user');
+  //   var user = json.decode(userJson!);
+  //   setState(() {
+  //     userData = user;
+  //   });
+  //   return user;
+  // }
+  // _ucFirst(String str)
+  // {
+  //   if(str.isEmpty)
+  //     return null;
+  //   if(str.length<=1)
+  //     return str.toUpperCase();
+  //   var x=str.toString();
+  //   return x.substring(0,1).toUpperCase()+x.substring(1);
+  // }
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    userData={};
-    _getUserInfo();
-
+    userData=userD;
+    // _getUserInfo();
+    fullNameController.text=ucFirst(userData['fName'].toString())+' '+ucFirst(userData['fName'].toString());
   }
   @override
   Widget build(BuildContext context) {
@@ -73,7 +74,8 @@ class _EditProfileOpState extends State<EditProfileOp> {
                       children: [
                         Text("Hello!", style:
                         TextStyle(fontSize: 17, color: Colors.black, fontFamily: "PTSans", fontWeight: FontWeight.w500 )),
-                        Text('${_ucFirst(userD['fName'].toString())} ${_ucFirst(userD['lName'].toString())}', style:
+                        // Text('${(userD['fName'].toString())} ${(userD['lName'].toString())}', style:
+                        Text('${(userD['fName'].toString())} ${(userD['lName'].toString())}', style:
                         TextStyle(fontSize: 26, color: Colors.black, fontFamily: "PTSans", fontWeight: FontWeight.bold)),
                       ],
                     ),
@@ -164,34 +166,30 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   TextEditingController phoneController = TextEditingController();
 
   late Map<String,dynamic> userData;
-  _getUserInfo() async {
-    SharedPreferences localStorage = await SharedPreferences.getInstance();
-    var userJson = localStorage.getString('user');
-    var user = json.decode(userJson!);
-    setState(() {
-      userData = user;
-      firstNameController.text=_ucFirst(userData['fName'].toString());
-      lastNameController.text=_ucFirst(userData['lName'].toString());
-      mailController.text= userData['email'].toString();
-      phoneController.text= userData['contact'].toString();
-    });
-    return user;
-  }
-  _ucFirst(String str)
-  {
-    if(str.isEmpty)
-      return null;
-    if(str.length<=1)
-      return str.toUpperCase();
-    var x=str.toString();
-    return x.substring(0,1).toUpperCase()+x.substring(1);
-  }
+  // _getUserInfo() async {
+  //   SharedPreferences localStorage = await SharedPreferences.getInstance();
+  //   var userJson = localStorage.getString('user');
+  //   var user = json.decode(userJson!);
+  //   setState(() {
+  //     userData = user;
+  //     firstNameController.text=_ucFirst(userData['fName'].toString());
+  //     lastNameController.text=_ucFirst(userData['lName'].toString());
+  //     mailController.text= userData['email'].toString();
+  //     phoneController.text= userData['contact'].toString();
+  //   });
+  //   return user;
+  // }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    userData={};
-    _getUserInfo();
+    userData=userD;
+    // _getUserInfo();
+    firstNameController.text=ucFirst(userData['fName'].toString());
+    lastNameController.text=ucFirst(userData['lName'].toString());
+    mailController.text= userData['email'].toString();
+    phoneController.text= userData['contact'].toString();
 
   }
   @override
@@ -233,8 +231,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       SizedBox(
                         height: 15,
                       ),
-                      textfieldStyle(textHint: _ucFirst(userData['fName'].toString()), obscureText: false, textLabel1:'First Name', controllerText: firstNameController, ),
-                      textfieldStyle(textHint:_ucFirst(userData['lName'].toString()) , obscureText: false, textLabel1: 'Last Name', controllerText: lastNameController,),
+                      textfieldStyle(textHint: ucFirst(userData['fName'].toString()), obscureText: false, textLabel1:'First Name', controllerText: firstNameController, ),
+                      textfieldStyle(textHint:ucFirst(userData['lName'].toString()) , obscureText: false, textLabel1: 'Last Name', controllerText: lastNameController,),
                       textfieldStyle(textHint: userData['email'].toString(), obscureText: false, textLabel1: 'Email',controllerText: mailController,),
                       textfieldStyle(textHint: userData['contact'].toString(), obscureText: false, textLabel1: 'Phone Number',controllerText: phoneController,),
                       Padding(
@@ -252,10 +250,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               {
                                 _save(
                                   {
-                                    'fName':firstNameController.text,
-                                    'lName':lastNameController.text,
-                                    'email':mailController.text,
-                                    'contact':phoneController.text
+                                    'fName':firstNameController.text.toLowerCase(),
+                                    'lName':lastNameController.text.toLowerCase(),
+                                    'email':mailController.text.toLowerCase(),
+                                    'contact':phoneController.text.toLowerCase()
                                   }
                                 );
                               },
