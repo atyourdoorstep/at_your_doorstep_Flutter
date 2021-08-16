@@ -166,7 +166,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   TextEditingController lastNameController = TextEditingController();
   TextEditingController mailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
-  String url='https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png';
+  bool _isChanged=false;
+  // String url='https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png';
 
   late Map<String,dynamic> userData;
   // _getUserInfo() async {
@@ -184,14 +185,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   // }
 
   @override
-  _getProfilePic()
-  async {
-    var u=await getProfilePicture();
-    setState(() {
-      url=u;
-    });
-    print('Profile pic URL: '+url.toString());
-  }
+  // _getProfilePic()
+  // async {
+  //   var u=await getProfilePicture();
+  //   setState(() {
+  //     url=u;
+  //   });
+  //   print('Profile pic URL: '+url.toString());
+  // }
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -201,7 +202,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     lastNameController.text=ucFirst(userData['lName'].toString());
     mailController.text= userData['email'].toString();
     phoneController.text= userData['contact'].toString();
-    _getProfilePic();
   }
   @override
   Widget build(BuildContext context) {
@@ -234,7 +234,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           CircleAvatar(
                             backgroundColor: Colors.grey,
                             radius: 60,
-                            backgroundImage: NetworkImage( url),
+                            backgroundImage: NetworkImage( profilePicUrl),
                             // backgroundImage: NetworkImage("https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png"),
                           ),
                           CircleAvatar(child: Icon(Icons.edit, size: 15,),),
@@ -243,10 +243,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                       SizedBox(
                         height: 15,
                       ),
-                      textfieldStyle(textHint: ucFirst(userData['fName'].toString()), obscureText: false, textLabel1:'First Name', controllerText: firstNameController, ),
-                      textfieldStyle(textHint:ucFirst(userData['lName'].toString()) , obscureText: false, textLabel1: 'Last Name', controllerText: lastNameController,),
-                      textfieldStyle(textHint: userData['email'].toString(), obscureText: false, textLabel1: 'Email',controllerText: mailController,),
-                      textfieldStyle(textHint: userData['contact'].toString(), obscureText: false, textLabel1: 'Phone Number',controllerText: phoneController,),
+                      textfieldStyle(textHint: ucFirst(userData['fName'].toString()), obscureText: false, textLabel1:'First Name', controllerText: firstNameController, onChange: (value){setState(() {_isChanged=true;}); },),
+                      textfieldStyle(textHint:ucFirst(userData['lName'].toString()) , obscureText: false, textLabel1: 'Last Name', controllerText: lastNameController,onChange:(value) {setState(() {_isChanged=true;}); },),
+                      textfieldStyle(textHint: userData['email'].toString(), obscureText: false, textLabel1: 'Email',controllerText: mailController,onChange:(value) {setState(() {_isChanged=true;}); },),
+                      textfieldStyle(textHint: userData['contact'].toString(), obscureText: false, textLabel1: 'Phone Number',controllerText: phoneController,onChange: (value){setState(() {_isChanged=true;}); },),
                       Padding(
                         padding: const EdgeInsets.all(10.0),
                         child: ButtonTheme(
@@ -258,17 +258,13 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(Radius.circular(10.0)),
                               ),
-                              onPressed: ()
-                              {
-                                _save(
-                                  {
-                                    'fName':firstNameController.text.toLowerCase(),
-                                    'lName':lastNameController.text.toLowerCase(),
-                                    'email':mailController.text.toLowerCase(),
-                                    'contact':phoneController.text.toLowerCase()
-                                  }
-                                );
-                              },
+                              onPressed: _isChanged?()=>{ _save({
+                              'fName':firstNameController.text.toLowerCase(),
+                              'lName':lastNameController.text.toLowerCase(),
+                              'email':mailController.text.toLowerCase(),
+                              'contact':phoneController.text.toLowerCase()
+                              }
+                              )}:null,
                               color: Colors.red,
                               child: Text("Save", style:
                               TextStyle(fontSize: 18, color: Colors.white, fontFamily: "PTSans" )),
@@ -291,6 +287,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     localStorage.setString(key, val);
   }
+  _sendTosave()
+  {
+    _save({
+      'fName':firstNameController.text.toLowerCase(),
+  'lName':lastNameController.text.toLowerCase(),
+    'email':mailController.text.toLowerCase(),
+  'contact':phoneController.text.toLowerCase()
+  }
+    );
+  }
   _save(var data ) async {
     print('in FUNC');
     // var data = {
@@ -312,6 +318,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         var user = json.decode(userJson!);
         setState(() {
           userD = user;
+          _isChanged=false;
         });
       } else {
         showMsg(context,body['message']);

@@ -53,7 +53,7 @@ class _HomePageOperationState extends State<HomePageOperation>
     super.initState();
     userData={};
     getUserInfo();
-
+    getProfilePicture();
 
   }
 
