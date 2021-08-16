@@ -41,7 +41,6 @@ class _HomePageOperationState extends State<HomePageOperation>
       userData = user;
     });
     userD = userData;
-    print("shhah $userD");
     return user;
   }
 

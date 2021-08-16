@@ -166,6 +166,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   TextEditingController lastNameController = TextEditingController();
   TextEditingController mailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
+  String url='https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png';
 
   late Map<String,dynamic> userData;
   // _getUserInfo() async {
@@ -183,6 +184,14 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   // }
 
   @override
+  _getProfilePic()
+  async {
+    var u=await getProfilePicture();
+    setState(() {
+      url=u;
+    });
+    print('Profile pic URL: '+url.toString());
+  }
   void initState() {
     // TODO: implement initState
     super.initState();
@@ -192,7 +201,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     lastNameController.text=ucFirst(userData['lName'].toString());
     mailController.text= userData['email'].toString();
     phoneController.text= userData['contact'].toString();
-
+    _getProfilePic();
   }
   @override
   Widget build(BuildContext context) {
@@ -225,7 +234,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           CircleAvatar(
                             backgroundColor: Colors.grey,
                             radius: 60,
-                            backgroundImage: NetworkImage("https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png"),
+                            backgroundImage: NetworkImage( url),
+                            // backgroundImage: NetworkImage("https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png"),
                           ),
                           CircleAvatar(child: Icon(Icons.edit, size: 15,),),
                         ],
@@ -276,20 +286,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       ),
     );
   }
-  _showMsg(msg) { //
-    final snackBar = SnackBar(
-      backgroundColor: Color(0xffc76464),
-      content: Text(msg),
-      action: SnackBarAction(
-        textColor: Colors.white,
-        label: 'Close',
-        onPressed: () {
-          // Some code to undo the change!
-        },
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
   toLocal(String key,String val)async
   {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
@@ -318,7 +314,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           userD = user;
         });
       } else {
-        _showMsg(body['message']);
+        showMsg(context,body['message']);
         //EasyLoading.showToast(body['message']);
       }
     }

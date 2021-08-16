@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'dart:async';
+
 import 'package:at_your_doorstep/Constants.dart';
 import 'package:at_your_doorstep/HomePage.dart';
 import 'package:at_your_doorstep/api.dart';
@@ -21,62 +21,7 @@ void main()  {
 
   //return;
   runApp(MyApp());
-  // runApp(SplashState());
 }
-
-class SplashState extends StatefulWidget {
-  const SplashState({Key? key}) : super(key: key);
-
-  @override
-  _SplashStateState createState() => _SplashStateState();
-}
-
-class _SplashStateState extends State<SplashState> {
-
-  @override
-  void initState() {
-    super.initState();
-    // TODO: implement initState
-    Timer(Duration(seconds: 5),(){
-      Navigator.pushReplacement(
-          context,
-          new MaterialPageRoute(
-              builder: (context) => MyHomePage(title: "At Your Doorstep")));
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        SizedBox(
-          height: 15,
-        ),
-        Center(
-          child: Container(
-              child: Center(child: Hero(
-                  tag: 'logo',
-                  child: Image.asset("assets/atyourdoorstep.png", height: 170,width: 170,)))),
-        ),
-        Stack(
-          alignment: AlignmentDirectional.topCenter,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(13.0),
-              child: Center(
-                child: Text("AT YOUR DOORSTEP", style:
-                TextStyle(fontSize: 19, color: Colors.black26, fontFamily: "PTSans", fontWeight: FontWeight.w700 , letterSpacing: 2.0)),
-              ),
-            ),
-            CircularProgressIndicator(color: Colors.red,),
-          ],
-        ),
-      ],
-    );
-  }
-}
-
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -92,10 +37,9 @@ class MyApp extends StatelessWidget {
         primarySwatch: Colors.red,
 
       ),
-      home: SplashState(),
-      initialRoute: 'SplashPage',
+      home: MyHomePage(title: 'At Your Doorstep'),
+      initialRoute: 'LoginPage',
       routes: {
-        'SplashPage':(context)=>SplashState(),
         'LoginPage':(context)=>MyHomePage(title: 'AtYourDoorStep')
       },
       builder: EasyLoading.init(),
@@ -135,21 +79,16 @@ class _MyHomePageState extends State<MyHomePage> {
   _checkStatus()async
   {
     EasyLoading.show(status: 'loading...');
-    print('in Func check');
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     String? token= await localStorage.getString('token');
     var user = ( await localStorage.getString('user'));
-    print (user);
-    print (token);
     if(token !=null&&token.length>0)
     {
       var resp= await CallApi().postData(token, '/getCurrentUser')  ;
       var body = json.decode(resp.body);
       if (body['success']!=null) {
-        print('In status: ' + body.toString());
         if (body['success']) {
           EasyLoading.dismiss();
-          print(body);
           Navigator.push(
               context,
               new MaterialPageRoute(
@@ -157,7 +96,7 @@ class _MyHomePageState extends State<MyHomePage> {
         }
       }
       else {
-        _showMsg('connection error');
+        showMsg(context,'connection error');
       }
       // Navigator.push(
       //     context,
@@ -181,45 +120,15 @@ class _MyHomePageState extends State<MyHomePage> {
                       SizedBox(
                         height: 60,
                       ),
-                      IntrinsicHeight(
-                        child: Row(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Container(
-                                  child: Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Center(child: Hero(
-                                        tag: 'logo',
-                                        child: Image.asset("assets/atyourdoorstep.png", height: 150,width: 150,))),
-                                  )),
-                            ),
-                            VerticalDivider(
-                              width: 20,
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Center(
-                                    child: Text("Welcome to AYD!", style:
-                                    TextStyle(fontSize: 17, color: Colors.black45, fontFamily: "PTSans", fontWeight: FontWeight.w300)),
-                                  ),
-                                  Center(
-                                    child: Text("SIGN IN", style:
-                                    TextStyle(fontSize: 30, color: Colors.red, fontFamily: "PTSans", fontWeight: FontWeight.w800 , letterSpacing: 2.0)),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
+                      Container(
+                          child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Center(child: Image.asset("assets/atyourdoorstep.png", height: 180,width: 180,)),
+                          )),
+                      Center(
+                        child: Text("LOG IN", style:
+                        TextStyle(fontSize: 25, color: Colors.red, fontFamily: "PTSans", fontWeight: FontWeight.w700 , letterSpacing: 2.0)),
                       ),
-                      // Center(
-                      //   child: Text("SIGN IN", style:
-                      //   TextStyle(fontSize: 25, color: Colors.red, fontFamily: "PTSans", fontWeight: FontWeight.w700 , letterSpacing: 2.0)),
-                      // ),
                       SizedBox(
                         height: 30,
                       ),
@@ -245,7 +154,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                 //EasyLoading.show(status: 'loading...');
                                 //EasyLoading.show(status: 'loading...');
 
-                                print('done');
                                 //Future.delayed(const Duration(seconds: 4));
                                 var data = {
                                   'email' : mailController.text,
@@ -275,7 +183,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                 side: BorderSide(color: Colors.red),
                               ),
                               onPressed: () {
-                                //print(mailController);
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
@@ -317,7 +224,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.all(Radius.circular(10.0),
                                 ),
-                                // side: BorderSide(color: Colors.red),
+                               // side: BorderSide(color: Colors.red),
                               ),
                               onPressed: () async {
                                 var user={
@@ -356,35 +263,34 @@ class _MyHomePageState extends State<MyHomePage> {
 
   }
 
-  Expanded buildDivider(){
+Expanded buildDivider(){
     return Expanded(
       child: Divider(
         color: Color(0xFFD9D9D9),
-        height: 1.5,
+      height: 1.5,
       ),);
-  }
+}
 
-  _showMsg(msg) { //
-    final snackBar = SnackBar(
-      backgroundColor: Color(0xffc76464),
-      content: Text(msg),
-      action: SnackBarAction(
-        textColor: Colors.white,
-        label: 'Close',
-        onPressed: () {
-          // Some code to undo the change!
-        },
-      ),
-    );
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-  }
+  // _showMsg(msg) { //
+  //   final snackBar = SnackBar(
+  //     backgroundColor: Color(0xffc76464),
+  //     content: Text(msg),
+  //     action: SnackBarAction(
+  //       textColor: Colors.white,
+  //       label: 'Close',
+  //       onPressed: () {
+  //         // Some code to undo the change!
+  //       },
+  //     ),
+  //   );
+  //   ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  // }
   toLocal(String key,String val)async
   {
     SharedPreferences localStorage = await SharedPreferences.getInstance();
     localStorage.setString(key, val);
   }
   void login(var data ) async {
-    print('in FUNC');
     setState(() {
       _isLoading = true;
     });
@@ -397,26 +303,25 @@ class _MyHomePageState extends State<MyHomePage> {
     var res = await CallApi().postData(data, '/mobileLogin');
     var body = json.decode(res.body);
     EasyLoading.dismiss();
-    print(body);
     if (body != null){
       if(body['success']!=null)
-        if (body['success']) {
-          SharedPreferences localStorage = await SharedPreferences.getInstance();
-          localStorage.setString('token', body['token']);
-          localStorage.setString('user', json.encode(body['user']));
-          Navigator.push(
-              context,
-              new MaterialPageRoute(
-                  builder: (context) => CupertinoHomePage()));
-        } else {
-          _showMsg(body['message']);
-          //EasyLoading.showToast(body['message']);
-        }
-      else
-      {
-        _showMsg('Communication Error');
+      if (body['success']) {
+        SharedPreferences localStorage = await SharedPreferences.getInstance();
+        localStorage.setString('token', body['token']);
+        localStorage.setString('user', json.encode(body['user']));
+        Navigator.push(
+            context,
+            new MaterialPageRoute(
+                builder: (context) => CupertinoHomePage()));
+      } else {
+        showMsg(context,body['message']);
+        //EasyLoading.showToast(body['message']);
       }
-    }
+      else
+        {
+          showMsg(context,'Communication Error');
+        }
+  }
     setState(() {
       _isLoading = false;
     });
