@@ -20,7 +20,6 @@ class CallApi{
         headers: _setHeaders()
     );
     return resp;
-
   }
   getData(apiUrl) async {
     Uri fullUrl = Uri.parse(_url + apiUrl);

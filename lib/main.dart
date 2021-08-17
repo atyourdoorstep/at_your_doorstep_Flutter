@@ -9,6 +9,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:at_your_doorstep/textFieldClass.dart';
 import 'package:blobs/blobs.dart';
+import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 //import 'api.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
@@ -301,21 +302,25 @@ Expanded buildDivider(){
 
     EasyLoading.show(status: 'loading...');
     var res = await CallApi().postData(data, '/mobileLogin');
+    Response resp=res;
+    print(resp.statusCode);
     var body = json.decode(res.body);
     EasyLoading.dismiss();
     if (body != null){
-      if(body['success']!=null)
-      if (body['success']) {
-        SharedPreferences localStorage = await SharedPreferences.getInstance();
-        localStorage.setString('token', body['token']);
-        localStorage.setString('user', json.encode(body['user']));
-        Navigator.push(
-            context,
-            new MaterialPageRoute(
-                builder: (context) => CupertinoHomePage()));
-      } else {
-        showMsg(context,body['message']);
-        //EasyLoading.showToast(body['message']);
+      if(body['success']!=null) {
+        if (body['success']) {
+          SharedPreferences localStorage = await SharedPreferences
+              .getInstance();
+          localStorage.setString('token', body['token']);
+          localStorage.setString('user', json.encode(body['user']));
+          Navigator.push(
+              context,
+              new MaterialPageRoute(
+                  builder: (context) => CupertinoHomePage()));
+        } else {
+          showMsg(context, body['message']);
+          //EasyLoading.showToast(body['message']);
+        }
       }
       else
         {
