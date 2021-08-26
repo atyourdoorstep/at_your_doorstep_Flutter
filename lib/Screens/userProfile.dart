@@ -412,9 +412,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
     EasyLoading.show(status: 'loading...');
     final ImagePicker _picker = ImagePicker();
-    File image = await _picker.pickImage(
+    XFile image = await _picker.pickImage(
         source: ImageSource.camera, imageQuality: 50
-    ) as File;
+    ) as XFile;
+    print("cam: "+image.path.toString());
     var msg=await CallApi().uploadFile(image, '/setProfilePicture');
     var body=msg.data;
 
@@ -422,13 +423,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
       showMsg(context, 'Image updated');
       setState(() {
         profilePicUrl=body['profile']['image'];
-        EasyLoading.dismiss();
+
       });
     }
-    else {
+    else
       showMsg(context, 'error in updating image');
-      EasyLoading.dismiss();
-    }
+    EasyLoading.dismiss();
   }
   _imgFromGallery() async {
 
