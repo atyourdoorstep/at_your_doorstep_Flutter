@@ -1,17 +1,15 @@
+import 'dart:async';
 import 'dart:convert';
 
-import 'package:at_your_doorstep/Constants.dart';
-import 'package:at_your_doorstep/HomePage.dart';
-import 'package:at_your_doorstep/api.dart';
-import 'package:at_your_doorstep/signup_page.dart';
-import 'package:at_your_doorstep/userProfile.dart';
+import 'package:at_your_doorstep/Help_Classes/Constants.dart';
+import 'package:at_your_doorstep/Help_Classes/api.dart';
+import 'package:at_your_doorstep/Help_Classes/textFieldClass.dart';
+import 'package:at_your_doorstep/Screens/HomePage.dart';
+import 'package:at_your_doorstep/Screens/signup_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:at_your_doorstep/textFieldClass.dart';
-import 'package:blobs/blobs.dart';
 import 'package:http/http.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-//import 'api.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 
 
@@ -23,6 +21,61 @@ void main()  {
   //return;
   runApp(MyApp());
 }
+
+class SplashState extends StatefulWidget {
+  const SplashState({Key? key}) : super(key: key);
+
+  @override
+  _SplashStateState createState() => _SplashStateState();
+}
+
+class _SplashStateState extends State<SplashState> {
+
+  @override
+  void initState() {
+    super.initState();
+    // TODO: implement initState
+    Timer(Duration(seconds: 5),(){
+      Navigator.pushReplacement(
+          context,
+          new MaterialPageRoute(
+              builder: (context) => MyHomePage(title: "At Your Doorstep")));
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        SizedBox(
+          height: 15,
+        ),
+        Center(
+          child: Container(
+              child: Center(child: Hero(
+                  tag: 'logo',
+                  child: Image.asset("assets/atyourdoorstep.png", height: 170,width: 170,)))),
+        ),
+        Stack(
+          alignment: AlignmentDirectional.topCenter,
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(13.0),
+              child: Center(
+                child: Text("AT YOUR DOORSTEP", style:
+                TextStyle(fontSize: 19, color: Colors.black26, fontFamily: "PTSans", fontWeight: FontWeight.w700 , letterSpacing: 2.0)),
+              ),
+            ),
+            CircularProgressIndicator(color: Colors.red,),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+
 
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
@@ -36,12 +89,14 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
 
         primarySwatch: Colors.red,
+       // canvasColor: Colors.transparent,
 
       ),
-      home: MyHomePage(title: 'At Your Doorstep'),
-      initialRoute: 'LoginPage',
+      home: SplashState(),
+      initialRoute: 'SplashPage',
       routes: {
-        'LoginPage':(context)=>MyHomePage(title: 'AtYourDoorStep')
+        'SplashPage':(context)=>SplashState(),
+        'LoginPage':(context)=>MyHomePage(title: 'AtYourDoorStep'),
       },
       builder: EasyLoading.init(),
     );
@@ -93,7 +148,7 @@ class _MyHomePageState extends State<MyHomePage> {
           Navigator.push(
               context,
               new MaterialPageRoute(
-                  builder: (context) => CupertinoHomePage()));
+                  builder: (context) => CupertinoHomePage(userName:"LoginUser")));
         }
       }
       else {
@@ -121,15 +176,45 @@ class _MyHomePageState extends State<MyHomePage> {
                       SizedBox(
                         height: 60,
                       ),
-                      Container(
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Center(child: Image.asset("assets/atyourdoorstep.png", height: 180,width: 180,)),
-                          )),
-                      Center(
-                        child: Text("LOG IN", style:
-                        TextStyle(fontSize: 25, color: Colors.red, fontFamily: "PTSans", fontWeight: FontWeight.w700 , letterSpacing: 2.0)),
+                      IntrinsicHeight(
+                        child: Row(
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Container(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Center(child: Hero(
+                                        tag: 'logo',
+                                        child: Image.asset("assets/atyourdoorstep.png", height: 150,width: 150,))),
+                                  )),
+                            ),
+                            VerticalDivider(
+                              width: 20,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Center(
+                                    child: Text("Welcome to AYD!", style:
+                                    TextStyle(fontSize: 17, color: Colors.black45, fontFamily: "PTSans", fontWeight: FontWeight.w300)),
+                                  ),
+                                  Center(
+                                    child: Text("SIGN IN", style:
+                                    TextStyle(fontSize: 30, color: Colors.red, fontFamily: "PTSans", fontWeight: FontWeight.w800 , letterSpacing: 2.0)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
+                      // Center(
+                      //   child: Text("SIGN IN", style:
+                      //   TextStyle(fontSize: 25, color: Colors.red, fontFamily: "PTSans", fontWeight: FontWeight.w700 , letterSpacing: 2.0)),
+                      // ),
                       SizedBox(
                         height: 30,
                       ),
@@ -238,7 +323,7 @@ class _MyHomePageState extends State<MyHomePage> {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                      builder: (context) => CupertinoHomePage()),
+                                      builder: (context) => CupertinoHomePage(userName: "Guest")),
                                 );
                               },
                               color: Colors.white,
@@ -316,7 +401,7 @@ Expanded buildDivider(){
           Navigator.push(
               context,
               new MaterialPageRoute(
-                  builder: (context) => CupertinoHomePage()));
+                  builder: (context) => CupertinoHomePage(userName: "loginUser",)));
         } else {
           showMsg(context, body['message']);
           //EasyLoading.showToast(body['message']);
