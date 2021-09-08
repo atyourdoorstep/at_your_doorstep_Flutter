@@ -430,7 +430,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         source: ImageSource.camera, imageQuality: 50
     ) as XFile;
     print("cam: "+image.path.toString());
-    var msg=await CallApi().uploadFile(image, '/setProfilePicture');
+    var msg=await CallApi().uploadFile(image,{}, '/setProfilePicture');
     var body=msg.data;
 
     if( body['success']) {
@@ -453,7 +453,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     XFile image = await _picker.pickImage(
         source: ImageSource.gallery, imageQuality: 50
     ) as XFile;
-    var msg=await CallApi().uploadFile(image, '/setProfilePicture');
+    var msg=await CallApi().uploadFile(image,{}, '/setProfilePicture');
     var body=msg.data;
     if( body['success']) {
       showMsg(context, 'Image updated');
