@@ -44,7 +44,7 @@ class _HomePageOperationState extends State<HomePageOperation>
 
   var serviceNames;
   bool executed = false;
-  //late TabController _tabControl;
+  late AnimationController controller;
 
   @override
   void initState() {
@@ -58,8 +58,21 @@ class _HomePageOperationState extends State<HomePageOperation>
     //   print("Loading Screen");
     //   build(context);
     // });
+    controller = AnimationController(
+        vsync: this,
+      duration: const Duration(seconds: 5),
+    )..addListener(() {
+      setState(() {});
+    });
+    controller.repeat(reverse: true);
     executed = false;
 
+  }
+  @override
+  void dispose() {
+    controller.dispose();
+    // TODO: implement dispose
+    super.dispose();
   }
 
   @override
@@ -99,7 +112,7 @@ class _HomePageOperationState extends State<HomePageOperation>
           body: executed ? SingleChildScrollView(
             child: Column(
               mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.all(8.0),
@@ -130,73 +143,93 @@ class _HomePageOperationState extends State<HomePageOperation>
                             child: Image.network("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ0gUdOSUpCj1Ua90OToZZ5JICiNVohiiK-cg&usqp=CAU"),
                           ),
                         ),
+                        Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ClipRRect(
+                            borderRadius: BorderRadius.circular(18.0),
+                            child: Image.network("https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSyzhchKdlDlRAVwZdkEtVWRRGxXxC8PxdqOg&usqp=CAU"),
+                          ),
+                        ),
                       ],
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 11,vertical: 10),
-                  child: Text("Available Services", style:
-                  TextStyle(fontSize: 21, color: Colors.black, fontFamily: "PTSans", fontWeight: FontWeight.w700 )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 11,vertical: 10),
+                      child: Text("Available Services", style:
+                      TextStyle(fontSize: 21, color: Colors.black, fontFamily: "PTSans", fontWeight: FontWeight.w700 )),
+                    ),
+                  ],
                 ),
-                Padding(
-                  padding: const EdgeInsets.all(10.0),
-                  child: SizedBox(
-                    height: 130,
-                    child: GridView.builder(
-                      itemCount: serviceNames["data"].length,
-                      scrollDirection: Axis.horizontal,
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 1),
-                      itemBuilder: (context , index){
-                        return GestureDetector(
-                          onTap: () {
-                            print(serviceNames["data"][index]['children'].length);
-                            int len = serviceNames["data"][index]['children'].length;
-                            var serviceGen = serviceNames["data"][index]['children'];
+                Align(
+                  alignment: AlignmentDirectional.center,
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: SizedBox(
+                      height: 130,
+                      child: GridView.builder(
+                        itemCount: serviceNames["data"].length,
+                        scrollDirection: Axis.horizontal,
+                          gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 1),
+                        itemBuilder: (context , index){
+                          return GestureDetector(
+                            onTap: () {
+                              print(serviceNames["data"][index]['children'].length);
+                              int len = serviceNames["data"][index]['children'].length;
+                              var serviceGen = serviceNames["data"][index]['children'];
 
-                            showModalBottomSheet(
-                                elevation: 20.0,
-                                context: context,
+                              showModalBottomSheet(
+                                  elevation: 20.0,
+                                  context: context,
 
-                                builder: (context) => ServiceCategory(
-                                  serviceN: serviceNames,
-                                  service1: serviceNames["data"][index]['children'],
-                                  len1: serviceNames["data"][index]['children'].length,
-                                  ind: index
-                                ),
-
-                              );
-
-                            // Navigator.push(
-                            //     context,
-                            //     new MaterialPageRoute(
-                            //         builder: (context) => ServiceCategory(sName: ucFirst(serviceNames["data"][index]['name']))));
-                          },
-                          child: Card(
-                            child: Center(
-                                child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(serviceNames["data"][index]['name'],),
-                          )),
-                            shadowColor: Colors.grey[300],
-                            shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(Radius.circular(10.0),
-                            ),
-                            side: BorderSide(color: Colors.red),
-                          ),),
-                        );
-                      },
+                                  builder: (context) => ServiceCategory(
+                                    serviceN: serviceNames,
+                                    service1: serviceNames["data"][index]['children'],
+                                    len1: serviceNames["data"][index]['children'].length,
+                                    ind: index
+                                  ),
+                                );},
+                            child: Card(
+                              child: Center(
+                                  child: Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(serviceNames["data"][index]['name'],),
+                            )),
+                              shadowColor: Colors.grey[300],
+                              shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.all(Radius.circular(10.0),
+                              ),
+                              side: BorderSide(color: Colors.red),
+                            ),),
+                          );
+                        },
+                      ),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 11,vertical: 10),
-                  child: Text("Recommended for you", style:
-                  TextStyle(fontSize: 21, color: Colors.black, fontFamily: "PTSans", fontWeight: FontWeight.w700 )),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 11,vertical: 10),
+                      child: Text("Recommended for you", style:
+                      TextStyle(fontSize: 21, color: Colors.black, fontFamily: "PTSans", fontWeight: FontWeight.w700 )),
+                    ),
+                  ],
                 ),
               ],
             ),
-          ): Center(child: CircularProgressIndicator(color: Colors.red,),),
+          ): Center(
+            child: Stack(
+              alignment: Alignment.center,
+              children: [
+              CircularProgressIndicator(color: Colors.red,value: controller.value,),
+            Image.asset("assets/atyourdoorstep.png", height: 28,width: 28,),
+            ],
+          ),),
     );
   }
 
