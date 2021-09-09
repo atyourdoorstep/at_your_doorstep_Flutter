@@ -302,12 +302,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                             children: [
                                               GestureDetector(
                                                 onTap:() async {
-                                                  // final ImagePicker _picker = ImagePicker();
-                                                  // XFile image = await _picker.pickImage(
-                                                  //     source: ImageSource.gallery, imageQuality: 50
-                                                  // ) as XFile;
-                                                  _imgFromGallery();
                                                   Navigator.of(context).pop();
+                                                  EasyLoading.show(status: 'loading...');
+                                                  _updateProfilePicture(await CallApi().uploadFile(await _imgFromGallery(),{}, '/setProfilePicture'));
+                                                  EasyLoading.dismiss();
+
                                                 },
                                                 child: ListTile(
                                                   leading: Icon(Icons.photo),
@@ -317,9 +316,11 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                               Divider(),
                                               GestureDetector(
                                                 onTap:() async {
-
-                                                  _imgFromCamera();
+                                                  //_imgFromCamera
                                                   Navigator.of(context).pop();
+                                                  EasyLoading.show(status: 'loading...');
+                                                  _updateProfilePicture(await CallApi().uploadFile(await _imgFromCamera(),{}, '/setProfilePicture'));
+                                                  EasyLoading.dismiss();
                                                 },
                                                 child: ListTile(
                                                   leading: Icon(Icons.camera),
@@ -421,7 +422,18 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         //EasyLoading.showToast(body['message']);
     }
   }
-
+  _updateProfilePicture(msg)
+  {
+    var body=msg.data;
+    if( body['success']) {
+      showMsg(context, 'Image updated');
+      setState(() {
+        profilePicUrl=body['profile']['image'];
+      });
+    }
+    else
+      showMsg(context, 'error in updating image');
+  }
   _imgFromCamera() async {
 
     EasyLoading.show(status: 'loading...');
@@ -429,6 +441,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     XFile image = await _picker.pickImage(
         source: ImageSource.camera, imageQuality: 50
     ) as XFile;
+    EasyLoading.dismiss();
+    return image;
     print("cam: "+image.path.toString());
     var msg=await CallApi().uploadFile(image,{}, '/setProfilePicture');
     var body=msg.data;
@@ -442,7 +456,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     }
     else
       showMsg(context, 'error in updating image');
-    EasyLoading.dismiss();
   }
   _imgFromGallery() async {
 

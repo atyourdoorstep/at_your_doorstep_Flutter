@@ -69,26 +69,6 @@ class _SuggestNewServiceState extends State<SuggestNewService> {
                                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                                 ),
                                 onPressed: () async {
-                                  SharedPreferences localStorage = await SharedPreferences.getInstance();
-                                  // String? token=localStorage.getString('token');
-                                  XFile x=await _imgFromGallery();
-                                  var resp=await CallApi().uploadFile(x,
-                                      {
-                                       'token':localStorage.getString('token'),
-                                        'name':'newName',
-                                        'description':'desc',
-                                        'category_id':6,
-                                        'price':222,
-                                      }
-                                      , '/createPost');
-                                  print('response: '+resp.toString());
-                                  var body = resp.data;
-                                  if(body['success'])
-                                    {
-                                      print(body.toString());
-                                    }
-                                  else
-                                    showMsg(context, body['message']);
                                 },
                                 color: Colors.red,
                                 child: Text("Send", style:
