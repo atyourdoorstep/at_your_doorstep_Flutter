@@ -42,6 +42,16 @@ class _HomePageOperationState extends State<HomePageOperation>
     return user;
   }
 
+  getSellerInfoSave() async {
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var userJson = localStorage.getString('userSeller');
+    var user = json.decode(userJson!);
+    setState(() {
+      userSeller = user;
+    });
+    return user;
+  }
+
   var serviceNames;
   bool executed = false;
   late AnimationController controller;
@@ -54,6 +64,9 @@ class _HomePageOperationState extends State<HomePageOperation>
     getUserInfo();
     getProfilePicture();
     getParentServices();
+    getRoleUser();
+    getSellerInfo();
+    getSellerInfoSave();
     // Timer(Duration(seconds: 5),(){
     //   print("Loading Screen");
     //   build(context);
@@ -192,18 +205,21 @@ class _HomePageOperationState extends State<HomePageOperation>
                                     ind: index
                                   ),
                                 );},
-                            child: Card(
-                              child: Center(
-                                  child: Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(serviceNames["data"][index]['name'],),
-                            )),
-                              shadowColor: Colors.grey[300],
-                              shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.all(Radius.circular(10.0),
-                              ),
-                              side: BorderSide(color: Colors.red),
-                            ),),
+                            child: Hero(
+                              tag: "Header",
+                              child: Card(
+                                child: Center(
+                                    child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Text(serviceNames["data"][index]['name'],),
+                              )),
+                                shadowColor: Colors.grey[300],
+                                shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10.0),
+                                ),
+                                side: BorderSide(color: Colors.red),
+                              ),),
+                            ),
                           );
                         },
                       ),

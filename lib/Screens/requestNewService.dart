@@ -18,6 +18,19 @@ class SuggestNewService extends StatefulWidget {
 }
 
 class _SuggestNewServiceState extends State<SuggestNewService> {
+
+  TextEditingController firstNameController = TextEditingController();
+  TextEditingController desNameController = TextEditingController();
+  TextEditingController mailController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    mailController.text= userD['email'].toString();
+    firstNameController.text= userD['fName'].toString();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,9 +67,11 @@ class _SuggestNewServiceState extends State<SuggestNewService> {
                         SizedBox(
                           height: 20,
                         ),
-                        textfieldStyle(textHint:"Name", obscureText: false, textLabel1:'Your Name',),
-                        textfieldStyle(textHint: "Email", obscureText: false, textLabel1: 'Email',),
-                        textfieldStyle(contentP: EdgeInsets.symmetric(vertical: 60) ,textHint: "Write your Message", obscureText: false, textLabel1: 'Request Message',),
+                        textfieldStyle(textHint:"Name", obscureText: false, textLabel1:'Your Name',controllerText: firstNameController,),
+                        textfieldStyle(textHint: "Email", obscureText: false, textLabel1: 'Email',controllerText: mailController,),
+                        textfieldStyle(
+                          contentP:   EdgeInsets.symmetric(vertical: 50),
+                          textHint: "Write your Request", obscureText: false, textLabel1: 'Request Message',controllerText: desNameController,),
                         Padding(
                           padding: const EdgeInsets.all(10.0),
                           child: ButtonTheme(
@@ -69,6 +84,13 @@ class _SuggestNewServiceState extends State<SuggestNewService> {
                                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                                 ),
                                 onPressed: () async {
+                                  SharedPreferences localStorage = await SharedPreferences.getInstance();
+                                  if(desNameController.text !=""){
+                                    saveRequest({
+                                      'token': localStorage.getString('token'),
+                                      'description': desNameController.text,
+                                    });
+                                  }
                                 },
                                 color: Colors.red,
                                 child: Text("Send", style:
@@ -91,13 +113,19 @@ class _SuggestNewServiceState extends State<SuggestNewService> {
       ),
     );
   }
-  _imgFromGallery() async {
-    SharedPreferences localStorage = await SharedPreferences.getInstance();
-    var token = localStorage.getString('token');
-    final ImagePicker _picker = ImagePicker();
-    XFile image = await _picker.pickImage(
-        source: ImageSource.gallery, imageQuality: 50
-    ) as XFile;
-    return image;
+  saveRequest(var data ) async {
+    EasyLoading.show(status: 'loading...');
+    var res = await CallApi().postData(data, '/requestService');
+    var body = json.decode(res.body);
+    EasyLoading.dismiss();
+    print(body);
+    if (body != null){
+      if (body['success']!) {
+        print(body.toString());
+        showMsg(context,"Request Sent Successfully");
+      }
+      showMsg(context,body['message']);
+    }
   }
+
 }

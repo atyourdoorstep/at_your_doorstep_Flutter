@@ -103,7 +103,7 @@ class _EditProfileOpState extends State<EditProfileOp> {
                               Navigator.push(context, MaterialPageRoute(builder: (context) => EditProfileScreen()),);
                             },
                             child: ListTile(title: Text("Edit Profile", style: menuFont,),
-                            leading: Icon(Icons.edit),
+                              leading: Icon(Icons.edit),
                             ),
                           ),
                           Divider(),
@@ -161,10 +161,12 @@ class _EditProfileOpState extends State<EditProfileOp> {
                 SizedBox(
                   height: 25,
                 ),
-                ButtonTheme(
-                  height: 70,
-                  hoverColor: Colors.grey,
-                  child: ElevatedButton(
+                Visibility(
+                  visible: roleOfUser != "seller",
+                  child: ButtonTheme(
+                    height: 70,
+                    hoverColor: Colors.grey,
+                    child: ElevatedButton(
                       onPressed: (){
 
                         Navigator.of(
@@ -173,6 +175,23 @@ class _EditProfileOpState extends State<EditProfileOp> {
 
                       },
                       child: Text("Registered as a Service Provider"),
+                    ),
+                  ),
+                ),
+                Visibility(
+                  visible: roleOfUser == "seller",
+                  child: ButtonTheme(
+                    hoverColor: Colors.grey,
+                    minWidth: double.infinity,
+                    height: 55,
+                    child: ElevatedButton(
+                      onPressed: (){
+                         Navigator.of(
+                           context,
+                          rootNavigator: true,).pushNamed('sellerUpdateProfile');
+                      },
+                      child: Text("Go to Seller Profile"),
+                    ),
                   ),
                 ),
               ],
@@ -273,75 +292,85 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         load? Stack(
                           alignment: AlignmentDirectional.bottomEnd,
                           children: [
-                          CircleAvatar(
-                              backgroundColor: Colors.grey,
-                              radius: 60,
-                              backgroundImage: NetworkImage( profilePicUrl),
-                              // backgroundImage: NetworkImage("https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png"),
+                            GestureDetector(
+                              onTap:(){
+                                 Navigator.of(
+                                   context,
+                                   rootNavigator: true,).pushNamed('ShowFullImage');
+                        },
+                              child: Hero(
+                                tag:"fullsize",
+                                child: CircleAvatar(
+                                  backgroundColor: Colors.grey,
+                                  radius: 60,
+                                  backgroundImage: NetworkImage( profilePicUrl),
+                                  // backgroundImage: NetworkImage("https://www.pngfind.com/pngs/m/676-6764065_default-profile-picture-transparent-hd-png-download.png"),
+                                ),
+                              ),
                             ),
                             GestureDetector(
                               onTap: (){
                                 print("Change Image");
                                 showModalBottomSheet(
                                   elevation: 20.0,
-                                    context: context,
-                                    builder: (context) => Container(
-                                      height: 200,
-                                      color: Colors.transparent,
-                                      child: Container(
-                                        decoration: BoxDecoration(
-                                          color: Colors.white,
-                                          borderRadius: BorderRadius.only(
-                                            topLeft: Radius.circular(10.0),
-                                            topRight: Radius.circular(10.0),
-                                          ),
+                                  context: context,
+                                  builder: (context) => Container(
+                                    height: 200,
+                                    color: Colors.transparent,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: BorderRadius.only(
+                                          topLeft: Radius.circular(10.0),
+                                          topRight: Radius.circular(10.0),
                                         ),
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Column(
-                                            children: [
-                                              GestureDetector(
-                                                onTap:() async {
-                                                  Navigator.of(context).pop();
-                                                  EasyLoading.show(status: 'loading...');
-                                                  _updateProfilePicture(await CallApi().uploadFile(await _imgFromGallery(),{}, '/setProfilePicture'));
-                                                  EasyLoading.dismiss();
+                                      ),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          children: [
+                                            GestureDetector(
+                                              onTap:() async {
+                                                Navigator.of(context).pop();
+                                                EasyLoading.show(status: 'loading...');
+                                                _updateProfilePicture(await CallApi().uploadFile(await _imgFromGallery(),{}, '/setProfilePicture'));
+                                                EasyLoading.dismiss();
 
-                                                },
-                                                child: ListTile(
-                                                  leading: Icon(Icons.photo),
-                                                  title: Text("Upload From Gallery", style: menuFont,),
-                                                ),
+                                              },
+                                              child: ListTile(
+                                                leading: Icon(Icons.photo),
+                                                title: Text("Upload From Gallery", style: menuFont,),
                                               ),
-                                              Divider(),
-                                              GestureDetector(
-                                                onTap:() async {
-                                                  //_imgFromCamera
-                                                  Navigator.of(context).pop();
-                                                  EasyLoading.show(status: 'loading...');
-                                                  _updateProfilePicture(await CallApi().uploadFile(await _imgFromCamera(),{}, '/setProfilePicture'));
-                                                  EasyLoading.dismiss();
-                                                },
-                                                child: ListTile(
-                                                  leading: Icon(Icons.camera),
-                                                  title: Text("Open Camera", style: menuFont,),
-                                                ),
+                                            ),
+                                            Divider(),
+                                            GestureDetector(
+                                              onTap:() async {
+                                                //_imgFromCamera
+                                                Navigator.of(context).pop();
+                                                EasyLoading.show(status: 'loading...');
+                                                _updateProfilePicture(await CallApi().uploadFile(await _imgFromCamera(),{}, '/setProfilePicture'));
+                                                EasyLoading.dismiss();
+                                              },
+                                              child: ListTile(
+                                                leading: Icon(Icons.camera),
+                                                title: Text("Open Camera", style: menuFont,),
                                               ),
-                                            ],
-                                          ),
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
+                                  ),
                                 );
                               },
-                                child: CircleAvatar(
-                                  child: Icon(Icons.edit, size: 15,),),
+                              child: CircleAvatar(
+                                child: Icon(Icons.edit, size: 15,),),
                             ),
                           ],
                         ): CircleAvatar(
-                            child: CircularProgressIndicator(),
-                            backgroundColor: Colors.grey,
-                            radius: 60,
+                          child: CircularProgressIndicator(),
+                          backgroundColor: Colors.grey,
+                          radius: 60,
                         ),
                         SizedBox(
                           height: 15,
@@ -362,10 +391,10 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                                 ),
                                 onPressed: _isChanged?()=>{ _save({
-                                'fName':firstNameController.text.toLowerCase(),
-                                'lName':lastNameController.text.toLowerCase(),
-                                'email':mailController.text.toLowerCase(),
-                                'contact':phoneController.text.toLowerCase()
+                                  'fName':firstNameController.text.toLowerCase(),
+                                  'lName':lastNameController.text.toLowerCase(),
+                                  'email':mailController.text.toLowerCase(),
+                                  'contact':phoneController.text.toLowerCase()
                                 }
                                 )}:null,
                                 color: Colors.red,
@@ -396,11 +425,6 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   }
   _save(var data ) async {
     print('in FUNC');
-    // var data = {
-    //   'email' : mailController.text,
-    //   'password' : passwordController.text
-    // };
-
     EasyLoading.show(status: 'loading...');
     var res = await CallApi().postData(data, '/updateUser');
     var body = json.decode(res.body);
@@ -418,8 +442,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
           _isChanged=false;
         });
       }
-        showMsg(context,body['message']);
-        //EasyLoading.showToast(body['message']);
+      showMsg(context,body['message']);
+      //EasyLoading.showToast(body['message']);
     }
   }
   _updateProfilePicture(msg)
@@ -442,8 +466,9 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         source: ImageSource.camera, imageQuality: 50
     ) as XFile;
     EasyLoading.dismiss();
-    return image;
+   // return image;
     print("cam: "+image.path.toString());
+
     var msg=await CallApi().uploadFile(image,{}, '/setProfilePicture');
     var body=msg.data;
 
@@ -481,4 +506,154 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
 }
 
+
+class OpenFullImage extends StatefulWidget {
+  const OpenFullImage({Key? key}) : super(key: key);
+
+  @override
+  _OpenFullImageState createState() => _OpenFullImageState();
+}
+
+class _OpenFullImageState extends State<OpenFullImage> {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Profile photo", style: TextStyle(fontSize: 25,
+          color: Colors.red,
+          fontFamily: "PTSans",
+          fontWeight: FontWeight.w500,),),
+        elevation: 0.0,
+        backgroundColor: Colors.white,
+        leading: IconButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          icon: Icon(Icons.arrow_back_ios, color: Colors.red,size: 35,),
+        ),
+        actions: [
+          IconButton(
+            onPressed: () {
+                print("Change Image");
+                showModalBottomSheet(
+                  elevation: 20.0,
+                  context: context,
+                  builder: (context) => Container(
+                    height: 200,
+                    color: Colors.transparent,
+                    child: Container(
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.only(
+                          topLeft: Radius.circular(10.0),
+                          topRight: Radius.circular(10.0),
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Column(
+                          children: [
+                            GestureDetector(
+                              onTap:() async {
+                                // final ImagePicker _picker = ImagePicker();
+                                // XFile image = await _picker.pickImage(
+                                //     source: ImageSource.gallery, imageQuality: 50
+                                // ) as XFile;
+                                _imgFromGallery();
+                                Navigator.of(context).pop();
+                                EasyLoading.dismiss();
+                              },
+                              child: ListTile(
+                                leading: Icon(Icons.photo),
+                                title: Text("Upload From Gallery", style: menuFont,),
+                              ),
+                            ),
+                            Divider(),
+                            GestureDetector(
+                              onTap:() async {
+
+                                _imgFromCamera();
+                                Navigator.of(context).pop();
+                                EasyLoading.dismiss();
+                              },
+                              child: ListTile(
+                                leading: Icon(Icons.camera),
+                                title: Text("Open Camera", style: menuFont,),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                );
+            },
+            icon: Icon(Icons.edit, color: Colors.red,size: 35,),
+          ),
+          SizedBox(),
+        ],
+      ),
+      body: Hero(
+        tag:"fullsize",
+        child: Container(
+          decoration: BoxDecoration(
+            image: DecorationImage(
+              image: NetworkImage( profilePicUrl),
+              fit: BoxFit.fitWidth,
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+
+  _imgFromCamera() async {
+
+    EasyLoading.show(status: 'loading...');
+    final ImagePicker _picker = ImagePicker();
+    XFile image = await _picker.pickImage(
+        source: ImageSource.camera, imageQuality: 50
+    ) as XFile;
+    print("cam: "+image.path.toString());
+    var msg=await CallApi().uploadFile(image,{}, '/setProfilePicture');
+    var body=msg.data;
+
+    if( body['success']) {
+      showMsg(context, 'Image updated');
+      setState(() {
+        profilePicUrl=body['profile']['image'];
+
+      });
+
+      Navigator.pop(context);
+    }
+    else
+      showMsg(context, 'error in updating image');
+    EasyLoading.dismiss();
+  }
+  _imgFromGallery() async {
+
+    EasyLoading.show(status: 'loading...');
+    SharedPreferences localStorage = await SharedPreferences.getInstance();
+    var token = localStorage.getString('token');
+    final ImagePicker _picker = ImagePicker();
+    XFile image = await _picker.pickImage(
+        source: ImageSource.gallery, imageQuality: 50
+    ) as XFile;
+    var msg=await CallApi().uploadFile(image,{}, '/setProfilePicture');
+    var body=msg.data;
+    if( body['success']) {
+      showMsg(context, 'Image updated');
+      setState(() {
+        profilePicUrl=body['profile']['image'];
+      });
+      Navigator.pop(context);
+    }
+    else
+      showMsg(context, 'error in updating image');
+    EasyLoading.dismiss();
+  }
+
+}
 

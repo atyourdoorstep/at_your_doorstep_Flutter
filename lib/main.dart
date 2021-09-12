@@ -8,7 +8,9 @@ import 'package:at_your_doorstep/Screens/HomePage.dart';
 import 'package:at_your_doorstep/Screens/SearchPage.dart';
 import 'package:at_your_doorstep/Screens/registerForSeller.dart';
 import 'package:at_your_doorstep/Screens/requestNewService.dart';
+import 'package:at_your_doorstep/Screens/sellerProfileUpdate.dart';
 import 'package:at_your_doorstep/Screens/signup_page.dart';
+import 'package:at_your_doorstep/Screens/userProfile.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart';
@@ -105,6 +107,8 @@ class MyApp extends StatelessWidget {
         'RegisterSellerTwo':(context)=>RegisterSellerTwo(),
         'NewServiceSugestion':(context)=>SuggestNewService(),
         'SearchPage':(context)=>SearchPage(),
+        'ShowFullImage':(context)=>OpenFullImage(),
+        'sellerUpdateProfile':(context)=>UpdateSellerProfile(),
       },
       builder: EasyLoading.init(),
     );
@@ -242,20 +246,19 @@ class _MyHomePageState extends State<MyHomePage> {
                                   borderRadius: BorderRadius.all(Radius.circular(10.0)),
                                 ),
                                 onPressed: () async {
+                                  if(mailController.text != ""&& passwordController!=""){
                                   setState(() {
                                     showSpinner = true;
                                   });
-                                  // mailController.text=emailF;
-                                  // passwordController.text=passwordF;
-                                  //EasyLoading.show(status: 'loading...');
-                                  //EasyLoading.show(status: 'loading...');
-
-                                  //Future.delayed(const Duration(seconds: 4));
                                   var data = {
                                     'email' : mailController.text,
                                     'password' : passwordController.text
                                   };
                                   login(data);
+                                  }
+                                  else{
+                                    showMsg(context, 'Please fill the above fields');
+                                  }
                                   //EasyLoading.dismiss();
                                 },
                                 color: Colors.red,
@@ -427,4 +430,5 @@ Expanded buildDivider(){
       _isLoading = false;
     });
   }
+
 }

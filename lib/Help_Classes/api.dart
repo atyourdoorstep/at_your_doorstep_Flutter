@@ -7,8 +7,8 @@ import 'package:dio/dio.dart';
 class CallApi{
   // final String _url = 'http://127.0.0.1:8000/api';//for web
   // final String _url = 'http://10.0.2.2:8000/api';//for emulator
-  final String _url = 'http://atyourdoorstep-pk.herokuapp.com/api';//for heroku
-  //  final String _url = 'http://192.168.100.6:8000/api';//for local
+  // final String _url = 'http://atyourdoorstep-pk.herokuapp.com/api';//for heroku
+   final String _url = 'http://192.168.100.6:8000/api';//for local
 
 
 
