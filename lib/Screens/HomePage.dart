@@ -1,14 +1,17 @@
 import 'dart:async';
 import 'dart:convert';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:at_your_doorstep/Help_Classes/Constants.dart';
 import 'package:at_your_doorstep/Help_Classes/api.dart';
+import 'package:at_your_doorstep/Help_Classes/specialSpinner.dart';
 import 'package:at_your_doorstep/Screens/SearchPage.dart';
+import 'package:at_your_doorstep/Screens/serviceShowCase.dart';
 import 'package:at_your_doorstep/Screens/servicesCategory.dart';
 import 'package:at_your_doorstep/Screens/userProfile.dart';
 import 'package:flutter/material.dart';
-//import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:location/location.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -29,6 +32,15 @@ class HomePageOperation extends StatefulWidget {
 class _HomePageOperationState extends State<HomePageOperation>
     with TickerProviderStateMixin {
 
+  Location location = new Location();
+  late bool serviceEnabled;
+  late PermissionStatus _permissionGranted;
+  late LocationData _locationData;
+  bool _isListenLocation=false;
+  bool _isGetLocation=false;
+
+
+
   var checkUser = {};
   late Map<String,dynamic> userData;
   getUserInfo() async {
@@ -42,50 +54,42 @@ class _HomePageOperationState extends State<HomePageOperation>
     return user;
   }
 
-  // getSellerInfoSave() async {
-  //   SharedPreferences localStorage = await SharedPreferences.getInstance();
-  //   var userJson = localStorage.getString('userSeller');
-  //   var user = json.decode(userJson!);
-  //   setState(() {
-  //     userSeller = user;
-  //   });
-  //   return user;
-  // }
+  getLocation() async {
+    serviceEnabled =await location.serviceEnabled();
+    if(!serviceEnabled){
+      serviceEnabled = await location.requestService();
+      if(serviceEnabled) return;
+    }
+
+
+    _permissionGranted = await location.hasPermission();
+    if(_permissionGranted == PermissionStatus.denied){
+      _permissionGranted = await location.requestPermission();
+      if(_permissionGranted != PermissionStatus.granted) return;
+    }
+
+    _locationData = await location.getLocation();
+    setState(() {
+      _isGetLocation = true;
+    });
+  }
 
   var serviceNames;
   bool executed = false;
-  late AnimationController controller;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     userData={};
+    getLocation();
     getUserInfo();
     getProfilePicture();
     getParentServices();
     getRoleUser();
     getSellerInfo();
-    // getSellerInfoSave();
-    // Timer(Duration(seconds: 5),(){
-    //   print("Loading Screen");
-    //   build(context);
-    // });
-    controller = AnimationController(
-        vsync: this,
-      duration: const Duration(seconds: 5),
-    )..addListener(() {
-      setState(() {});
-    });
-    controller.repeat(reverse: true);
     executed = false;
 
-  }
-  @override
-  void dispose() {
-    controller.dispose();
-    // TODO: implement dispose
-    super.dispose();
   }
 
   @override
@@ -114,6 +118,8 @@ class _HomePageOperationState extends State<HomePageOperation>
                     children: [
                       Text('Deliver to: ',style:
                       TextStyle(fontSize: 13, color: Colors.white, fontFamily: "PTSans", fontWeight: FontWeight.w700 )),
+                      _isGetLocation ? Text("${_locationData.latitude}, ${_locationData.longitude}",style:
+                      TextStyle(fontSize: 13, color: Colors.white, fontFamily: "PTSans" )):
                       Text('Your Location',style:
                       TextStyle(fontSize: 13, color: Colors.white, fontFamily: "PTSans" )),
                     ],
@@ -236,16 +242,14 @@ class _HomePageOperationState extends State<HomePageOperation>
                     ),
                   ],
                 ),
+                _isGetLocation ? Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 11,vertical: 10),
+                  child: Text("Location: ${_locationData.latitude}, ${_locationData.longitude}", style:
+                  TextStyle(fontSize: 14, color: Colors.black, fontFamily: "PTSans", fontWeight: FontWeight.w700 )),
+                ): Container(),
               ],
             ),
-          ): Center(
-            child: Stack(
-              alignment: Alignment.center,
-              children: [
-              CircularProgressIndicator(color: Colors.red,value: controller.value,),
-            Image.asset("assets/atyourdoorstep.png", height: 28,width: 28,),
-            ],
-          ),),
+          ): SpecialSpinner(),
     );
   }
 
@@ -258,9 +262,7 @@ class _HomePageOperationState extends State<HomePageOperation>
         serviceNames = res;
       });
       executed = true;
-      //print(  serviceNames[0].toString());
     }
-    print(res.toString());
     return res;
   }
 
@@ -284,15 +286,14 @@ class CupertinoHomePage extends StatefulWidget {
 class _CupertinoHomePageState extends State<CupertinoHomePage> {
 
   late DateTime currentBackPressTime;
-  late String guestname;
+  late String guestName;
   bool guestCheck=true;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    guestname = widget.userName;
-    if(guestname == "Guest"){
-      print(guestname);
+    guestName = widget.userName;
+    if(guestName == "Guest"){
+      print(guestName);
       setState(() {
         guestCheck = false;
       });
@@ -303,16 +304,16 @@ class _CupertinoHomePageState extends State<CupertinoHomePage> {
   @override
   Widget build(BuildContext context) {
     return guestCheck ? WillPopScope(
-      onWillPop: onWillPop,
+      onWillPop: ()async => false,
       child: CupertinoTabScaffold(
         backgroundColor: Colors.transparent,
           tabBar: CupertinoTabBar(
             items: const <BottomNavigationBarItem>[
-              BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home" ),
-              BottomNavigationBarItem(icon: Icon(Icons.pages_rounded), label: "Services"),
-              BottomNavigationBarItem(icon: Icon(Icons.shopping_bag_outlined),label: "Cart"),
-              BottomNavigationBarItem(icon: Icon(Icons.search), label: "Search"),
-              BottomNavigationBarItem(icon: Icon(Icons.account_circle_outlined), label: "Profile"),
+              BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.home,size: 25), label: "Home" ),
+              BottomNavigationBarItem(icon: Icon(Icons.pages_rounded,size: 25), label: "Services"), //Icons.pages_rounded)
+              BottomNavigationBarItem(icon: Icon(Icons.shopping_bag_outlined,size: 25), label: "Cart"), //Icons.shopping_bag_outlined)
+              BottomNavigationBarItem(icon: Icon(Icons.search,size: 25), label: "Search"),
+              BottomNavigationBarItem(icon: Icon(FontAwesomeIcons.user,size: 25)),
             ],
           ),
           tabBuilder: (context,index){
@@ -326,7 +327,7 @@ class _CupertinoHomePageState extends State<CupertinoHomePage> {
               case 1:
                 return CupertinoTabView(builder: (context){
                   return CupertinoPageScaffold(
-                    child:  Center(child: Text("hello0"),),);
+                    child:  ServiceOption(),);
                 }
                 );
               case 2:
@@ -389,16 +390,5 @@ class _CupertinoHomePageState extends State<CupertinoHomePage> {
 
         }
     );
-  }
-
-  Future<bool> onWillPop() {
-    DateTime now = DateTime.now();
-    if (currentBackPressTime == null ||
-        now.difference(currentBackPressTime) > Duration(seconds: 2)) {
-      currentBackPressTime = now;
-      //Fluttertoast.showToast(msg: "Double Tap to Exit");
-      return Future.value(false);
-    }
-    return Future.value(true);
   }
 }

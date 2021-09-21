@@ -51,6 +51,7 @@ const menuFont = TextStyle(
 
 late Map<String,dynamic> userD = {};
 late Map<String,dynamic> userSeller = {};
+late Map<String,dynamic> categoryFetch = {};
 
 // getToken() async {
 //   SharedPreferences localStorage = await SharedPreferences.getInstance();
@@ -79,7 +80,7 @@ void logout(BuildContext context) async{
 }
 showMsg(BuildContext context,msg) { //
   final snackBar = SnackBar(
-    backgroundColor: Color(0xffc76464),
+    backgroundColor: Colors.black54,
     content: Text(msg),
     action: SnackBarAction(
       textColor: Colors.white,
@@ -164,7 +165,7 @@ imgFromGallery() async {
   return image;
 }
 
-
+var sampleImage = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRNWosb1JiswKwHTROhbee2jJvGPzIt-PInWg&usqp=CAU";
 
 // test()
 // async {
