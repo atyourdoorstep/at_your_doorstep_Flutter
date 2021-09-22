@@ -62,7 +62,7 @@ class _ServicesPageState extends State<ServicesPage> {
             child: Column(
               children: [
                 SizedBox(
-                  height: 40,
+                  height: 50,
                   child: ListView(
                     shrinkWrap: true,
                     children: [
@@ -140,21 +140,33 @@ class _ServicesPageState extends State<ServicesPage> {
                                   Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(ucFirst(categoryItem[index]['name']),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 2,
-                                          style: TextStyle(
-                                              color: Colors.black87, fontSize: 15.0, fontWeight: FontWeight.w700),),
+                                      Row(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Expanded(
+                                              child: Text(ucFirst(categoryItem[index]['name']),
+                                                overflow: TextOverflow.ellipsis,
+                                                maxLines: 2,
+                                                style: TextStyle(
+                                                    color: Colors.black87, fontSize: 15.0, fontWeight: FontWeight.w700),),
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      Padding(
-                                        padding: const EdgeInsets.all(8.0),
-                                        child: Text(ucFirst(categoryItem[index]['description'], ),
-                                          overflow: TextOverflow.ellipsis,
-                                          maxLines: 3,
-                                          style: TextStyle(
-                                              color: Colors.black26, fontSize: 15.0),),
+                                      Row(
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.all(8.0),
+                                            child: Expanded(
+                                              child: Text(ucFirst(categoryItem[index]['description'], ),
+                                                overflow: TextOverflow.clip,
+                                                maxLines: 2,
+                                                style: TextStyle(
+                                                    color: Colors.black26, fontSize: 15.0),),
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   )
@@ -177,6 +189,7 @@ class _ServicesPageState extends State<ServicesPage> {
   getCategoryItems(var dataId) async {
     categoryItem={};
     var res= await CallApi().postData({"id": dataId},'/categoryItems' );
+    print('did: '+dataId.toString());
     var body =json.decode(res.body);
     print(  body.toString());
     if(res.statusCode == 200){
