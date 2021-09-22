@@ -40,6 +40,7 @@ class _PostCreationState extends State<PostCreation> {
     if(info.statusCode == 200) {
       setState(() {
         categoryID= sellerV['sellerProfile']["category_id"];
+        print(categoryID.toString());
         });
       executed = true;
       getChildrenCategory();
@@ -48,22 +49,20 @@ class _PostCreationState extends State<PostCreation> {
 
   getChildrenCategory()async
   {
-    var info= await CallApi().postData({}, '/getAllServicesWithChildren');
+    print("hello" +categoryID.toString());
+    var info= await CallApi().postData({'id': categoryID}, '/getLastLvlCat');
     var category = json.decode(info.body);
+    print(category.toString());
     if(info.statusCode == 200) {
       setState(() {
         categoryFetch = category;
       });
-      for(int i=0; i<categoryFetch["data"].length ;i++){
-        if(categoryFetch["data"][i]['id']== categoryID){
           setState(() {
-            categoryList=categoryFetch["data"][i]["children"];
-            parentName=categoryFetch["data"][i]["name"];
-            var don = categoryFetch['data'][i]["children"].length;
+            categoryList=categoryFetch["children"];
+            parentName=categoryFetch["parent"]["name"];
+            var don = categoryFetch["children"].length;
             print("hello $don");
           });
-        }
-      }
       executed1 = true;
     }
   }
